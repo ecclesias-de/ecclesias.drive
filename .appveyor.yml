@@ -2,8 +2,7 @@ version: '{build}-{branch}'
 
 branches:
   only:
-    - master
-    - 2.6
+    - tine20fdrive-2.6.1
 
 clone_depth: 50
 
