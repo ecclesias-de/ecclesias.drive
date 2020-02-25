@@ -1,8 +1,8 @@
 version: '{build}-{branch}'
 
 branches:
-  only:
-    - tine20fdrive-2.6.1
+  except:
+    - master
 
 clone_depth: 50
 
@@ -22,24 +22,37 @@ install:
     & cmd /C "git clone -q --depth=1 git://anongit.kde.org/craftmaster.git C:\CraftMaster\CraftMaster 2>&1"
 
     craft $env:TARGET -i craft
-    craft $env:TARGET --add-blueprint-repository [git]https://github.com/owncloud/craft-blueprints-owncloud.git
-    craft $env:TARGET --install-deps owncloud-client
+    craft $env:TARGET --add-blueprint-repository [git]https://github.com/l8090100/craft-blueprints-tine20drive.git
+    craft $env:TARGET --install-deps tine20drive
 
 build_script:
 - ps: |
-    craft $env:TARGET --no-cache --src-dir $env:APPVEYOR_BUILD_FOLDER owncloud-client
+    craft $env:TARGET --no-cache --src-dir $env:APPVEYOR_BUILD_FOLDER tine20drive
 
 test_script:
 - ps: |
-   craft $env:TARGET --src-dir $env:APPVEYOR_BUILD_FOLDER --test owncloud-client
+   craft $env:TARGET --src-dir $env:APPVEYOR_BUILD_FOLDER --test tine20drive
 
 after_test:
 - ps: |
-    craft $env:TARGET --src-dir $env:APPVEYOR_BUILD_FOLDER --options [Packager]PackageType=NullsoftInstallerPackager --package owncloud-client
+    craft $env:TARGET --src-dir $env:APPVEYOR_BUILD_FOLDER --options [Packager]PackageType=NullsoftInstallerPackager --package tine20drive
 
 artifacts:
-  - path: binaries\*
+  - path: binaries\**\*.exe
+    name: tine20drive_artifact
 
+deploy:
+  release: v2.6.1-tine20drive
+  description: 'tine20drive v2.6.1 Release '
+  provider: GitHub
+  auth_token:
+    secure: MW3MTcfwOL8T9SbxbqDS4HkOa6aI/ErApmqVVcsWQQqKVPPkBjMtzSWudE8z/hBg # your encrypted token from GitHub
+  artifact: tine20drive_artifact           # upload all NuGet packages to release assets
+  draft: true
+  prerelease: false
+  on:
+    branch: v2.6.1-tine20drive                 # branch equals to tag
+    APPVEYOR_REPO_TAG: true        # deploy on tag push only
 
 environment:
     matrix:

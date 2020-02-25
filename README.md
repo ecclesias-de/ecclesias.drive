@@ -1,11 +1,11 @@
-# ownCloud Desktop Client
+# tin20drive Desktop Client
 
 [![Build Status](https://drone.owncloud.com/api/badges/owncloud/client/status.svg)](https://drone.owncloud.com/owncloud/client) [![Build status](https://ci.appveyor.com/api/projects/status/a1x3dslys7de6e21/branch/master?svg=true)](https://ci.appveyor.com/project/ownclouders/client/branch/master)
 
 
 ## Introduction
 
-The ownCloud Desktop Client is a tool to synchronize files from ownCloud Server
+The tin20drive Desktop Client is a tool to synchronize files from ownCloud Server
 with your computer.
 
 ## Download
@@ -24,8 +24,7 @@ https://github.com/owncloud/client.
 
 ## Building the source code
 
-[Building the Client](http://doc.owncloud.org/desktop/2.3/building.html)
-in the ownCloud Desktop Client manual.
+
 
 ## Reporting issues and contributing
 
@@ -40,26 +39,10 @@ patches, we need you to sign the [Contributor
 Agreement](https://owncloud.org/contribute/agreement) before
 we can accept your patch.
 
-If you want to contact us, e.g. before starting a more complex feature,
-you can join us at
-[#owncloud-client-dev](irc://irc.freenode.net/#owncloud-client-dev).
 
 ## Maintainers and Contributors
 
-The current maintainers of this repository are:
 
-* Markus Goetz <guruz@owncloud.com>
-* Olivier Goffart <ogoffart@owncloud.com>
-* Christian Kamm <mail@ckamm.de>
-
-ownCloud Desktop Client is developed by the ownCloud community and [receives
-patches from a variety of authors](https://github.com/owncloud/client/graphs/contributors).
-
-Past maintainers:
-
-* Klaas Freitag <freitag@owncloud.com>
-* Daniel Molkentin <daniel@molkentin.de>
-* Andreas Schneider <asn@cryptomilk.org>
 
 ## Building the Documentation
 

@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 3.1)
 set(CMAKE_CXX_STANDARD 14)
 
-project(client)
+# Add customized toolchian here if we need it.
+# set(CMAKE_TOOLCHAIN_FILE "/home/ccheng/client_2.5.4/owncloud/admin/win/Toolchain-mingw32-openSUSE.cmake")
+
+project(tine20drive)
 
 if(UNIT_TESTING)
     include(CTest)
@@ -14,8 +17,9 @@ include("${CMAKE_CURRENT_LIST_DIR}/THEME.cmake")
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 
-set(synclib_NAME "${APPLICATION_EXECUTABLE}sync")
-set(csync_NAME "${APPLICATION_EXECUTABLE}_csync")
+
+set(synclib_NAME "${APPLICATION_BASE}sync")
+set(csync_NAME "${APPLICATION_BASE}_csync")
 
 include(Warnings)
 
@@ -157,8 +161,7 @@ if(BUILD_CLIENT)
     endif()
     find_package(Sphinx)
     find_package(PdfLatex)
-
-   find_package(ZLIB REQUIRED)
+    find_package(ZLIB REQUIRED)
 endif()
 
 if (NOT DEFINED APPLICATION_ICON_NAME)

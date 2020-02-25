@@ -88,7 +88,8 @@ def is_exe(fpath):
   return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
 
 
-bundle_name = os.path.basename(bundle_dir).split('.')[0]
+#bundle_name = os.path.basename(bundle_dir).split('.')[0]
+bundle_name = 'owncloud'
 
 commands = []
 

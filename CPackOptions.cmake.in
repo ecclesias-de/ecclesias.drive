@@ -8,6 +8,7 @@ if(CPACK_GENERATOR MATCHES "NSIS")
 endif(CPACK_GENERATOR MATCHES "NSIS")
 
 set( CMAKE_SOURCE_DIR  @CMAKE_SOURCE_DIR@ )
+#Avoid fatal error : cpackdeb.cmake may only be used by cpack internally.
 set( CMAKE_BINARY_DIR  @CMAKE_BINARY_DIR@ )
 set( OEM_THEME_DIR     @OEM_THEME_DIR@ )
 

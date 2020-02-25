@@ -10,7 +10,7 @@ macro(owncloud_add_test test_class additional_cpp)
 
     target_link_libraries(${OWNCLOUD_TEST_CLASS}Test
         updater
-        ${APPLICATION_EXECUTABLE}sync
+        ${APPLICATION_BASE}sync
         Qt5::Core Qt5::Test Qt5::Xml Qt5::Network
     )
 
@@ -33,7 +33,7 @@ macro(owncloud_add_benchmark test_class additional_cpp)
 
     target_link_libraries(${OWNCLOUD_TEST_CLASS}Bench
         updater
-        ${APPLICATION_EXECUTABLE}sync
+        ${APPLICATION_BASE}sync
         Qt5::Core Qt5::Test Qt5::Xml Qt5::Network
     )
 

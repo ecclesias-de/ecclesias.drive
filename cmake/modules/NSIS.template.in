@@ -1,7 +1,8 @@
-;ownCloud installer script.
+;tine20drive installer script.
 
 !define APPLICATION_SHORTNAME "@APPLICATION_EXECUTABLE@"
 !define APPLICATION_NAME "@APPLICATION_NAME@"
+!define APPLICATION_BASE "@APPLICATION_BASE@"
 !define APPLICATION_VENDOR "@APPLICATION_VENDOR@"
 !define APPLICATION_EXECUTABLE "@APPLICATION_EXECUTABLE@.exe"
 !define APPLICATION_CMD_EXECUTABLE "@APPLICATION_EXECUTABLE@cmd.exe"
@@ -387,8 +388,8 @@ Section "${APPLICATION_NAME}" SEC_APPLICATION
    ;Main executable & csync
    File "${BUILD_PATH}\bin\${APPLICATION_EXECUTABLE}"
    File "${BUILD_PATH}\bin\${APPLICATION_CMD_EXECUTABLE}"
-   File "${BUILD_PATH}\bin\lib${APPLICATION_SHORTNAME}sync.dll"
-   File "${BUILD_PATH}\bin\lib${APPLICATION_SHORTNAME}_csync.dll"
+   File "${BUILD_PATH}\bin\lib${APPLICATION_BASE}sync.dll"
+   File "${BUILD_PATH}\bin\lib${APPLICATION_BASE}_csync.dll"
 
    File "${BUILD_PATH}\src\gui\client*.qm"
    ; Make sure only to copy qt, not qt_help, etc

@@ -300,7 +300,7 @@ Application::Application(int &argc, char **argv)
                 tr("There was an error while accessing the configuration "
                    "file at %1.")
                     .arg(ConfigFile().configFile()),
-                tr("Quit ownCloud"));
+                tr("Quit tine20drive"));
             QTimer::singleShot(0, qApp, SLOT(quit()));
             return;
         }
@@ -645,7 +645,7 @@ void Application::showHelp()
            << endl
            << QLatin1String(optionsC);
 
-    if (_theme->appName() == QLatin1String("ownCloud"))
+    if (_theme->appName() == QLatin1String("tine20drive"))
         stream << endl
                << "For more information, see http://www.owncloud.org" << endl
                << endl;

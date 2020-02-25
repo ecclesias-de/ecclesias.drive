@@ -1,0 +1,85 @@
+image: docker:19.03.1
+
+variables:
+
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+  GIT_SUBMODULE_STRATEGY: recursive
+   
+stages:
+  - build
+
+before_script:
+  - export
+  - git submodule sync --recursive
+  - git submodule update --init --recursive
+
+mac-build:
+  stage: build
+  tags:
+    - mac
+  script:
+    - sudo chmod +x ./ci-script/mac.sh
+    - ci-script/mac.sh
+  except:
+    - tags
+
+win-build:
+  stage: build
+  tags:
+    - shell 
+  before_script: 
+    - docker info 
+  script:
+    - sudo chmod +x ./ci-script/win.sh
+    - . ci-script/win.sh
+  except:
+    - tags
+
+mac-release:
+  stage: build
+  tags:
+    - mac
+  script:
+    - sudo chmod +x ./ci-script/mac.sh
+    - ci-script/mac.sh
+  artifacts:
+    paths:
+    - $CI_PROJECT_DIR/install/
+    expire_in: 2 hrs
+  only:
+    - tags
+
+win-release:
+  stage: build
+  tags:
+    - shell 
+  before_script: 
+    - docker info 
+  script:
+    - sudo chmod +x ./ci-script/win.sh
+    - . ci-script/win.sh
+  artifacts:
+    paths:
+    - $CI_PROJECT_DIR/build-win32/tine20drive-2.5.4.0-setup.exe
+    expire_in: 2 hrs
+  only:
+    - tags
+    
+# testing...
+#build-win-dind:
+#  services:
+#    - docker:19.03.1-dind 
+#  stage: build
+#  tags:
+#    - dind
+#  script:
+#    - apk update && apk add git
+#    - git submodule sync --recursive
+#    - git submodule update --init --recursive
+#    - cd admin/win/docker
+#    - docker build . -t owncloud-client-win32:2.5.4
+#    - cd ../../..
+#    - docker run -v "$PWD:/home/user/client" owncloud-client-win32:2.5.4  /home/user/client/admin/win/docker/build.sh client/  $(id -u)
+      
+  

@@ -38,20 +38,20 @@ if (NOT DEFINED APPLICATION_EXECUTABLE )
 endif()
 
 #---HELPER---
-set(OWNCLOUDDOLPHINHELPER ${APPLICATION_EXECUTABLE}dolphinpluginhelper)
+set(OWNCLOUDDOLPHINHELPER ${APPLICATION_BASE}dolphinpluginhelper)
 add_library(${OWNCLOUDDOLPHINHELPER} SHARED ownclouddolphinpluginhelper.cpp)
 target_link_libraries(${OWNCLOUDDOLPHINHELPER} Qt5::Network)
 generate_export_header(${OWNCLOUDDOLPHINHELPER} BASE_NAME ownclouddolphinpluginhelper)
 install(TARGETS ${OWNCLOUDDOLPHINHELPER} LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 #---OVERLAY PLUGIN---
-set(OWNCLOUDDOLPHINOVERLAYPLUGIN ${APPLICATION_EXECUTABLE}dolphinoverlayplugin)
+set(OWNCLOUDDOLPHINOVERLAYPLUGIN ${APPLICATION_BASE}dolphinoverlayplugin)
 kcoreaddons_add_plugin(${OWNCLOUDDOLPHINOVERLAYPLUGIN} INSTALL_NAMESPACE "kf5/overlayicon"
                        JSON ownclouddolphinoverlayplugin.json SOURCES ownclouddolphinoverlayplugin.cpp)
 target_link_libraries(${OWNCLOUDDOLPHINOVERLAYPLUGIN} KF5::CoreAddons KF5::KIOCore KF5::KIOWidgets ${OWNCLOUDDOLPHINHELPER})
 
 #---ACTION PLUGIN---
-set(OWNCLOUDDOLPHINACTIONPLUGIN ${APPLICATION_EXECUTABLE}dolphinactionplugin)
+set(OWNCLOUDDOLPHINACTIONPLUGIN ${APPLICATION_BASE}dolphinactionplugin)
 add_library(${OWNCLOUDDOLPHINACTIONPLUGIN} MODULE ownclouddolphinactionplugin.cpp)
 target_link_libraries(${OWNCLOUDDOLPHINACTIONPLUGIN} KF5::CoreAddons KF5::KIOCore KF5::KIOWidgets ${OWNCLOUDDOLPHINHELPER})
 configure_file(ownclouddolphinactionplugin.desktop.in ${OWNCLOUDDOLPHINACTIONPLUGIN}.desktop ESCAPE_QUOTES @ONLY)
