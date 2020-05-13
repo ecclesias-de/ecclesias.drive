@@ -79,12 +79,7 @@ fi
 # FIXME: OEMs?
 # they will need to do their own signing..
 
-
-# Sparkle wants a tbz, it cannot install raw pkg
 cd $install_path
-tar cf "$installer_file_tar" "$installer_file"
-bzip2 -9 "$installer_file_tar"
-mv "$installer_file_tar_bz2" "$installer_file_tbz"
 rc=$?
 if [ $rc == 0 ]; then
   echo "Successfully created $installer_file"
@@ -121,3 +116,8 @@ while true; do
     echo "not finish yet, sleep 30sec then check again..."
     sleep 30
 done
+
+# Sparkle wants a tbz, it cannot install raw pkg
+tar cf "$installer_file_tar" "$installer_file"
+bzip2 -9 "$installer_file_tar"
+mv "$installer_file_tar_bz2" "$installer_file_tbz"

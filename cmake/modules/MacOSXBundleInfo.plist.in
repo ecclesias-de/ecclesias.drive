@@ -28,10 +28,10 @@
         <string>@MIRALL_VERSION_STRING@</string>
         <key>NSHumanReadableCopyright</key>
         <string>(C) 2014-2019 @APPLICATION_VENDOR@</string>
-        <key>SUShowReleaseNotes</key>
-        <false/>
-        <key>SUPublicDSAKeyFile</key>
-        <string>dsa_pub.pem</string>
+        <key>SUPublicEDKey</key>
+	    <string>QVojUhCrAmNzQfq31ycZNH2gDPhMmzgrh6DAb0kN/xU=</string>
+	    <key>SUFeedURL</key>
+	    <string>@APPLICATION_UPDATE_URL@</string>
 
 <key>UTExportedTypeDeclarations</key>
 <array>

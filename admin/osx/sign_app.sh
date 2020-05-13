@@ -6,7 +6,28 @@ src_app="$1"
 identity="$2"
 team_identifier="$3"
 
-codesign -s "$identity" --options=runtime --timestamp --force --preserve-metadata=entitlements --verbose=4 --deep "$src_app"
+# sign Sparkle first
+echo "Signing Sparkle's AutoUpdate.app"
+	codesign \
+		--sign "$2" \
+		--force \
+		--deep \
+		--timestamp \
+		--options runtime \
+		--verbose \
+		"$1/Contents/Frameworks/Sparkle.framework/Versions/A/Resources/AutoUpdate.app"
+        
+echo "Signing tine20drive.app"
+    codesign \
+        --sign "$2" \
+        --options=runtime \
+        --timestamp \
+        --force \
+        --preserve-metadata=entitlements \
+        --verbose=4 \
+        --deep \
+        "$1"
+
 
 # Verify the signature
 codesign -dv $src_app

@@ -28,15 +28,17 @@ jobs:
         brew install $(brew deps owncloud-client)
         brew update
         brew cask install packages
+        sudo su -
+        bash $GITHUB_WORKSPACE/ci-script/mac_install_sparkle.sh
         sudo xcode-select -s /Applications/Xcode.app/Contents/Developer 
     - name: Build the package
       run: |
         mkdir build && cd build
         cmake -DCMAKE_PREFIX_PATH=/usr/local/opt/qt5 -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/install/ -DNO_SHIBBOLETH=1 ..
-        make install
+        sudo make install
         sudo make macdeployqt
-        sudo $GITHUB_WORKSPACE/admin/osx/sign_app.sh $GITHUB_WORKSPACE/install/tine20drive.app "${{ secrets.DEVELOPER_ID_APPLICATION }}" "${{ secrets.TEAM_IDENTITY }}"
-        sudo admin/osx/create_mac.sh $GITHUB_WORKSPACE/install/ $PWD "${{ secrets.DEVELOPER_ID_INSTALLER }}" "${{ secrets.APPLE_ID_MAIL }}" "${{ secrets.APPLE_APP_PASSWORD }}" "${{ secrets.ASC_PROVIDER }}"        
+        sudo bash $GITHUB_WORKSPACE/admin/osx/sign_app.sh $GITHUB_WORKSPACE/install/tine20drive.app "${{ secrets.DEVELOPER_ID_APPLICATION }}" "${{ secrets.TEAM_IDENTITY }}"
+        sudo bash admin/osx/create_mac.sh $GITHUB_WORKSPACE/install/ $PWD "${{ secrets.DEVELOPER_ID_INSTALLER }}" "${{ secrets.APPLE_ID_MAIL }}" "${{ secrets.APPLE_APP_PASSWORD }}" "${{ secrets.ASC_PROVIDER }}"        
     - name: Make Release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
