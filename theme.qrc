@@ -1,12 +1,6 @@
 <RCC>
     <qresource prefix="/client">
         <file alias="theme/colored/tine20drive-icon-512.png">theme/colored/512-tine20drive-icon.png</file>
-        <file alias="theme/colored/tine20drive-icon-256.png">theme/colored/256-tine20drive-icon.png</file>
-        <file alias="theme/colored/tine20drive-icon-128.png">theme/colored/128-tine20drive-icon.png</file>
-        <file alias="theme/colored/tine20drive-icon-22.png">theme/colored/22-tine20drive-icon.png</file>
-        <file alias="theme/colored/tine20drive-icon-32.png">theme/colored/32-tine20drive-icon.png</file>
-        <file alias="theme/colored/tine20drive-icon-48.png">theme/colored/48-tine20drive-icon.png</file>
-        <file alias="theme/colored/tine20drive-icon-64.png">theme/colored/64-tine20drive-icon.png</file>
         <file>theme/colored/state-error-32.png</file>
         <file>theme/colored/state-error-64.png</file>
         <file>theme/colored/state-error-128.png</file>
