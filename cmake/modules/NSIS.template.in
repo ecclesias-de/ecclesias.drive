@@ -1,4 +1,4 @@
-;tine20drive installer script.
+;ecclesiasdrive installer script.
 
 !define APPLICATION_SHORTNAME "@APPLICATION_EXECUTABLE@"
 !define APPLICATION_NAME "@APPLICATION_NAME@"

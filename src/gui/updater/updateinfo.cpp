@@ -9,6 +9,8 @@
 #include <QtCore/QtDebug>
 #include <QtCore/QFile>
 
+#include "config.h"
+
 namespace OCC {
 
 void UpdateInfo::setVersion(const QString &v)
@@ -53,8 +55,9 @@ QString UpdateInfo::downloadUrl() const
 
 UpdateInfo UpdateInfo::parseElement(const QDomElement &element, bool *ok)
 {
-    if (element.tagName() != QLatin1String("owncloudclient")) {
-        qCCritical(lcUpdater) << "Expected 'owncloudclient', got '" << element.tagName() << "'.";
+    QString targetTag = APPLICATION_SHORTNAME;
+    if (element.tagName() != targetTag) {
+        qCCritical(lcUpdater) << "Expected '"<< targetTag << "', got '" << element.tagName() << "'.";
         if (ok)
             *ok = false;
         return UpdateInfo();

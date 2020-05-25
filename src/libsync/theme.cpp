@@ -27,7 +27,7 @@
 #endif
 #include <QSslSocket>
 
-#include "tine20driveTheme.h"
+#include "ecclesiasdriveTheme.h"
 
 #ifdef THEME_INCLUDE
 #define Mirall OCC // namespace hack to make old themes work
@@ -227,7 +227,7 @@ QString Theme::defaultServerFolder() const
 
 QString Theme::helpUrl() const
 {
-    return QString::fromLatin1("https://doc.owncloud.org/desktop/%1.%2/").arg(MIRALL_VERSION_MAJOR).arg(MIRALL_VERSION_MINOR);
+    return QString::fromLatin1("https://www.ecclesias.de/hilfe/").arg(MIRALL_VERSION_MAJOR).arg(MIRALL_VERSION_MINOR);
 }
 
 QString Theme::conflictHelpUrl() const
@@ -317,9 +317,9 @@ QString Theme::gitSHA1() const
     QString devString;
 #ifdef GIT_SHA1
     const QString githubPrefix(QLatin1String(
-        "https://github.com/owncloud/client/commit/"));
+        "https://github.com/ecclesias-de/ecclesias.drive/commit/"));
     const QString gitSha1(QLatin1String(GIT_SHA1));
-    devString = QCoreApplication::translate("tine20driveTheme::about()",
+    devString = QCoreApplication::translate("ecclesiasdriveTheme::about()",
         "<p><small> Built from Git revision <a href=\"%1\">%2</a>"
         " on %3, %4 using Qt %5, %6</small></p>")
                     .arg(githubPrefix + gitSha1)
@@ -340,18 +340,20 @@ QString Theme::about() const
     if (vendor == "ownCloud") vendor = QLatin1String("ownCloud GmbH");
 
     QString devString;
-    devString = tr("<p> Version %2. For more information visit <a href=\"%3\">https://%4</a></p>"
-                       "<p> For known issues and help, please visit: <a href=\"https://central.owncloud.org/c/desktop-client\">https://central.owncloud.org</a></p>"
-                       "<p><small> By Klaas Freitag, Daniel Molkentin, Olivier Goffart, Markus Götz, "
-                       "  Jan-Christoph Borchardt, and others.</small></p>")
+    devString = tr("<p> Version %2. For more information visit <a href=\"%3\">https://www.%4</a></p>"
+                    "<p><small> By Klaas Freitag, Daniel Molkentin, Olivier Goffart, Markus Götz, "
+                    "  Jan-Christoph Borchardt, and others.</small></p>")
                     .arg(Utility::escape(MIRALL_VERSION_STRING),
-                        Utility::escape("https://" MIRALL_STRINGIFY(APPLICATION_DOMAIN)),
+                        Utility::escape("https://www." MIRALL_STRINGIFY(APPLICATION_DOMAIN)),
                         Utility::escape(MIRALL_STRINGIFY(APPLICATION_DOMAIN)));
     devString += tr("<p>Copyright ownCloud GmbH</p>");
     devString += tr("<p> Distributed by %1 and licensed under the GNU General Public License (GPL) Version 2.0.<br/>"
+                    "%2 and the %2 logo are registered trademarks.</p>")
+               .arg(Utility::escape(vendor), Utility::escape(APPLICATION_NAME));
+    devString += tr("<p><br/>"
                     "%2 and the %2 logo are registered trademarks of %1 in the "
                     "United States, other countries, or both.</p>")
-               .arg(Utility::escape(vendor), Utility::escape(APPLICATION_NAME));
+                .arg(Utility::escape("ownCloud GmbH"), Utility::escape("ownCloud"));
 
     devString += gitSHA1();
     devString += QString("<p><small>Using virtual files plugin: %1</small></p>")

@@ -61,7 +61,7 @@ win-release:
     - . ci-script/win.sh
   artifacts:
     paths:
-    - $CI_PROJECT_DIR/build-win32/tine20drive-2.5.4.0-setup.exe
+    - $CI_PROJECT_DIR/build-win32/ecclesiasdrive-2.5.4.0-setup.exe
     expire_in: 2 hrs
   only:
     - tags

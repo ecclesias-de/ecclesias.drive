@@ -47,7 +47,7 @@ ShareDialog::ShareDialog(QPointer<AccountState> accountState,
     , _sharePath(sharePath)
     , _localPath(localPath)
     , _maxSharingPermissions(maxSharingPermissions)
-    , _privateLinkUrl(accountState->account()->deprecatedPrivateLinkUrl(numericFileId).toString(QUrl::FullyEncoded))
+    , _privateLinkUrl(accountState->account()->deprecatedPrivateLinkUrl(sharePath).toString(QUrl::FullyEncoded))
     , _startPage(startPage)
     , _linkWidget(NULL)
     , _userGroupWidget(NULL)
@@ -169,7 +169,7 @@ void ShareDialog::slotPropfindReceived(const QVariantMap &result)
         _privateLinkUrl = privateLinkUrl;
     } else if (!numericFileId.isEmpty()) {
         qCInfo(lcSharing) << "Received numeric file id for" << _sharePath << numericFileId;
-        _privateLinkUrl = _accountState->account()->deprecatedPrivateLinkUrl(numericFileId).toString(QUrl::FullyEncoded);
+        _privateLinkUrl = _accountState->account()->deprecatedPrivateLinkUrl(_sharePath).toString(QUrl::FullyEncoded);
     }
 
     showSharingUi();

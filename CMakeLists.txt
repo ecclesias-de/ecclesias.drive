@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 14)
 # Add customized toolchian here if we need it.
 # set(CMAKE_TOOLCHAIN_FILE "/home/ccheng/client_2.5.4/owncloud/admin/win/Toolchain-mingw32-openSUSE.cmake")
 
-project(tine20drive)
+project(ecclesiasdrive)
 
 if(UNIT_TESTING)
     include(CTest)

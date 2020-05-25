@@ -19,39 +19,38 @@ install:
     git submodule update --init --recursive
 
     #use cmd to silence powershell behaviour for stderr
-    & cmd /C "git clone -q --depth=1 git://anongit.kde.org/craftmaster.git C:\CraftMaster\CraftMaster 2>&1"
+    & cmd /C "git clone -q --depth=1 https://github.com/KDE/craftmaster.git C:\CraftMaster\CraftMaster 2>&1"
 
     craft $env:TARGET -i craft
-    craft $env:TARGET --add-blueprint-repository [git]https://github.com/l8090100/craft-blueprints-tine20drive.git
-    craft $env:TARGET --install-deps tine20drive
+    craft $env:TARGET --add-blueprint-repository [git]https://github.com/ecclesias-de/craft-blueprints-ecclesiasdrive.git
+    craft $env:TARGET --install-deps ecclesiasdrive
 
 build_script:
 - ps: |
-    craft $env:TARGET --no-cache --src-dir $env:APPVEYOR_BUILD_FOLDER tine20drive
+    craft $env:TARGET --no-cache --src-dir $env:APPVEYOR_BUILD_FOLDER ecclesiasdrive
 
 test_script:
 - ps: |
-   craft $env:TARGET --src-dir $env:APPVEYOR_BUILD_FOLDER --test tine20drive
+   craft $env:TARGET --src-dir $env:APPVEYOR_BUILD_FOLDER --test ecclesiasdrive
 
 after_test:
 - ps: |
-    craft $env:TARGET --src-dir $env:APPVEYOR_BUILD_FOLDER --options [Packager]PackageType=NullsoftInstallerPackager --package tine20drive
+    craft $env:TARGET --src-dir $env:APPVEYOR_BUILD_FOLDER --options [Packager]PackageType=NullsoftInstallerPackager --package ecclesiasdrive
 
 artifacts:
   - path: binaries\**\*.exe
-    name: tine20drive_artifact
+    name: ecclesiasdrive_artifact
 
 deploy:
-  release: v2.6.1-tine20drive
-  description: 'tine20drive v2.6.1 Release '
+  release: $(APPVEYOR_REPO_TAG_NAME)
+  description: 'Release'
   provider: GitHub
   auth_token:
     secure: MW3MTcfwOL8T9SbxbqDS4HkOa6aI/ErApmqVVcsWQQqKVPPkBjMtzSWudE8z/hBg # your encrypted token from GitHub
-  artifact: tine20drive_artifact           # upload all NuGet packages to release assets
+  artifact: ecclesiasdrive_artifact           # upload all NuGet packages to release assets
   draft: true
   prerelease: false
   on:
-    branch: v2.6.1-tine20drive                 # branch equals to tag
     APPVEYOR_REPO_TAG: true        # deploy on tag push only
 
 environment:

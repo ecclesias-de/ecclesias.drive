@@ -17,7 +17,7 @@ echo "Signing Sparkle's AutoUpdate.app"
 		--verbose \
 		"$1/Contents/Frameworks/Sparkle.framework/Versions/A/Resources/AutoUpdate.app"
         
-echo "Signing tine20drive.app"
+echo "Signing ecclesiasdrive.app"
     codesign \
         --sign "$2" \
         --options=runtime \

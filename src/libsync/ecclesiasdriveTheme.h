@@ -12,22 +12,22 @@
  * for more details.
  */
 
-#ifndef TINE20DRIVE_MIRALL_THEME_H
-#define TINE20DRIVE_MIRALL_THEME_H
+#ifndef ecclesiasdrive_MIRALL_THEME_H
+#define ecclesiasdrive_MIRALL_THEME_H
 
 #include "theme.h"
 
 namespace OCC {
 
 /**
- * @brief The tine20driveTheme class
+ * @brief The ecclesiasdriveTheme class
  * @ingroup libsync
  */
-class tine20driveTheme : public Theme
+class ecclesiasdriveTheme : public Theme
 {
     Q_OBJECT
 public:
-    tine20driveTheme();
+    ecclesiasdriveTheme();
 #ifndef TOKEN_AUTH_ONLY
     QVariant customMedia(CustomMediaType type) Q_DECL_OVERRIDE;
 
@@ -36,10 +36,10 @@ public:
     QPixmap wizardHeaderLogo() const Q_DECL_OVERRIDE;
 #endif
 
-    // For tine20driveTheme-brandings *do* show the virtual files option.
+    // For ecclesiasdriveTheme-brandings *do* show the virtual files option.
     bool showVirtualFilesOption() const override { return true; }
 
 private:
 };
 }
-#endif // TINE20DRIVE_MIRALL_THEME_H
+#endif // ecclesiasdrive_MIRALL_THEME_H

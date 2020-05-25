@@ -12,7 +12,7 @@
  * for more details.
  */
 
-#include "tine20driveTheme.h"
+#include "ecclesiasdriveTheme.h"
 
 #include <QString>
 #include <QVariant>
@@ -28,32 +28,32 @@
 
 namespace OCC {
 
-tine20driveTheme::tine20driveTheme()
+ecclesiasdriveTheme::ecclesiasdriveTheme()
     : Theme()
 {
 }
 
 #ifndef TOKEN_AUTH_ONLY
-QVariant tine20driveTheme::customMedia(CustomMediaType)
+QVariant ecclesiasdriveTheme::customMedia(CustomMediaType)
 {
     return QVariant();
 }
 #endif
 
 #ifndef TOKEN_AUTH_ONLY
-QColor tine20driveTheme::wizardHeaderBackgroundColor() const
+QColor ecclesiasdriveTheme::wizardHeaderBackgroundColor() const
 {
     return QColor("#1d2d42");
 }
 
-QColor tine20driveTheme::wizardHeaderTitleColor() const
+QColor ecclesiasdriveTheme::wizardHeaderTitleColor() const
 {
     return QColor("#ffffff");
 }
 
-QPixmap tine20driveTheme::wizardHeaderLogo() const
+QPixmap ecclesiasdriveTheme::wizardHeaderLogo() const
 {
-    return QPixmap(hidpiFileName(":/client/theme/colored/wizard_logo-tine20drive.png"));
+    return QPixmap(hidpiFileName(":/client/theme/colored/wizard_logo-ecclesiasdrive.png"));
 }
 
 #endif
