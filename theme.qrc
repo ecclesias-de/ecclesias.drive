@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/client">
-        <file alias="theme/colored/tine20drive-icon-512.png">theme/colored/512-tine20drive-icon.png</file>
+        <file alias="theme/colored/ecclesiasdrive-icon-512.png">theme/colored/512-ecclesiasdrive-icon.png</file>
         <file>theme/colored/state-error-32.png</file>
         <file>theme/colored/state-error-64.png</file>
         <file>theme/colored/state-error-128.png</file>
@@ -25,8 +25,8 @@
         <file>theme/colored/state-sync-64.png</file>
         <file>theme/colored/state-sync-128.png</file>
         <file>theme/colored/state-sync-256.png</file>
-        <file>theme/colored/wizard_logo-tine20drive.png</file>
-        <file>theme/colored/wizard_logo@2x-tine20drive.png</file>
+        <file>theme/colored/wizard_logo-ecclesiasdrive.png</file>
+        <file>theme/colored/wizard_logo@2x-ecclesiasdrive.png</file>
         <file>theme/white/state-error-32.png</file>
         <file>theme/white/state-error-64.png</file>
         <file>theme/white/state-error-128.png</file>

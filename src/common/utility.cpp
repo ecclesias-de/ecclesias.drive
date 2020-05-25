@@ -184,7 +184,7 @@ QByteArray Utility::userAgentString()
     // this constant "ownCloud" is defined in the default OEM theming
     // that is used for the standard client. If it is changed there,
     // it needs to be adjusted here.
-    if (appName != QLatin1String("tine20drive")) {
+    if (appName != QLatin1String("ecclesiasdrive")) {
         re += QString(" (%1)").arg(appName);
     }
     return re.toLatin1();

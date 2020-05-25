@@ -48,7 +48,7 @@ set(libsync_SRCS
     syncresult.cpp
     syncoptions.cpp
     theme.cpp
-    tine20driveTheme.cpp
+    ecclesiasdriveTheme.cpp
     creds/dummycredentials.cpp
     creds/abstractcredentials.cpp
     creds/credentialscommon.cpp

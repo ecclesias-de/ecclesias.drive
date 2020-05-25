@@ -27,31 +27,31 @@ install:
 
 build_script:
 - ps: |
-    craft $env:TARGET --no-cache --src-dir $env:APPVEYOR_BUILD_FOLDER tine20drive
+    craft $env:TARGET --no-cache --src-dir $env:APPVEYOR_BUILD_FOLDER ecclesiasdrive
 
 test_script:
 - ps: |
-   craft $env:TARGET --src-dir $env:APPVEYOR_BUILD_FOLDER --test tine20drive
+   craft $env:TARGET --src-dir $env:APPVEYOR_BUILD_FOLDER --test ecclesiasdrive
 
 after_test:
 - ps: |
-    craft $env:TARGET --src-dir $env:APPVEYOR_BUILD_FOLDER --options [Packager]PackageType=NullsoftInstallerPackager --package tine20drive
+    craft $env:TARGET --src-dir $env:APPVEYOR_BUILD_FOLDER --options [Packager]PackageType=NullsoftInstallerPackager --package ecclesiasdrive
 
 artifacts:
   - path: binaries\**\*.exe
-    name: tine20drive_artifact
+    name: ecclesiasdrive_artifact
 
 deploy:
-  release: v2.6.1-tine20drive
-  description: 'tine20drive v2.6.1 Release '
+  release: v2.6.1-ecclesiasdrive
+  description: 'ecclesiasdrive v2.6.1 Release '
   provider: GitHub
   auth_token:
     secure: MW3MTcfwOL8T9SbxbqDS4HkOa6aI/ErApmqVVcsWQQqKVPPkBjMtzSWudE8z/hBg # your encrypted token from GitHub
-  artifact: tine20drive_artifact           # upload all NuGet packages to release assets
+  artifact: ecclesiasdrive_artifact           # upload all NuGet packages to release assets
   draft: true
   prerelease: false
   on:
-    branch: v2.6.1-tine20drive                 # branch equals to tag
+    branch: v2.6.1-ecclesiasdrive                 # branch equals to tag
     APPVEYOR_REPO_TAG: true        # deploy on tag push only
 
 environment:

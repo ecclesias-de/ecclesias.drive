@@ -90,7 +90,7 @@ fi
 
 cd $install_path
 
-xcrun altool --notarize-app --primary-bundle-id "com.tine20.desktopclient" --username "$apple_id" --password "$apple_app_password" --asc-provider "$provider" --file "$installer_file" &> tmp
+xcrun altool --notarize-app --primary-bundle-id "com.tine20.ecclesiasdesktopclient" --username "$apple_id" --password "$apple_app_password" --asc-provider "$provider" --file "$installer_file" &> tmp
 uuid=`cat tmp | grep -Eo '\\w{8}-(\\w{4}-){3}\\w{12}$'`
 while true; do
     echo "checking for notarization..."
