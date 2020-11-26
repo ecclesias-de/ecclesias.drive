@@ -260,7 +260,7 @@ void AccountSettings::slotCustomContextMenuRequested(const QPoint &pos)
         ac = menu->addAction(tr("Open folder in browser"));
         auto info = _model->infoForIndex(index);
         OC_ASSERT(info);
-        QString path = info->_folder->remotePathTrailingSlash();
+        QString path;
         path += info->_path;
         connect(ac, &QAction::triggered, this, [this, path]{
             fetchPrivateLinkUrl(_accountState->account(), path, {}, this, [](const QString &url) {

@@ -1,34 +1,13 @@
-<!--- 
-Please try to only report a bug if it happens with the latest version
-The latest version can be seen by checking the ChangeLog: https://owncloud.org/changelog/desktop/
-
-For support try: https://central.owncloud.org/c/desktop-client
---->
-
-
-### Expected behaviour
+### Expected behavior
 Tell us what should happen
 
-### Actual behaviour
+### Actual behavior
 Tell us what happens instead
 
 ### Steps to reproduce
 1. 
 2. 
 3. 
-
-### Server configuration
-Operating system:
-
-Web server: 
-
-Database:
-
-PHP version:
-
-ownCloud version:
-
-Storage backend (external storage):
 
 ### Client configuration
 Client version:
@@ -37,9 +16,7 @@ Operating system:
 
 OS language:
 
-Qt version used by client package (Linux only, see also Settings dialog):
-
-Client package (From ownCloud or distro) (Linux only):
+Client package (Linux only):
 
 Installation path of client:
 
@@ -50,11 +27,8 @@ logs.
 
 ```Template for output < 10 lines```
 
-1. Client logfile: Output of `owncloud --logwindow` or `owncloud --logfile log.txt`
-(On Windows using `cmd.exe`, you might need to first `cd` into the ownCloud directory)
-(See also https://doc.owncloud.org/desktop/troubleshooting.html#log-files )
+1. Client logfile: Output of `tine20drive --logwindow` or `tine20drive --logfile log.txt`
+(On Windows using `cmd.exe`, you might need to first `cd` into the tine20drive directory)
 
-2. Web server error log:
 
-3. Server logfile: ownCloud log (data/owncloud.log):
 

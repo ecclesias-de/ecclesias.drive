@@ -181,10 +181,15 @@ QUrl Account::davUrl() const
     return Utility::concatUrlPath(url(), davPath());
 }
 
-QUrl Account::deprecatedPrivateLinkUrl(const QByteArray &numericFileId) const
+QString Account::deprecatedPrivateLinkUrl(const QString &remotePath) const
 {
-    return Utility::concatUrlPath(_userVisibleUrl,
-        QStringLiteral("/index.php/f/") + QString::fromLatin1(QUrl::toPercentEncoding(QString::fromLatin1(numericFileId))));
+    QString refPath = QLatin1String("#/Filemanager/showNode/personal");
+
+    if (remotePath.contains(QLatin1String("shared"))) {
+        refPath = QLatin1String("#/Filemanager/showNode");
+    }
+
+    return QString(QLatin1String("%1%2%3")).arg(_userVisibleUrl.toString(), refPath, remotePath);
 }
 
 /**

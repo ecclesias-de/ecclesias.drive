@@ -128,7 +128,7 @@ public:
      * This uses the old way of manually building the url. New code should
      * use the "privatelink" property accessible via PROPFIND.
      */
-    QUrl deprecatedPrivateLinkUrl(const QByteArray &numericFileId) const;
+    QString deprecatedPrivateLinkUrl(const QString &remotePath) const;
 
     /** Holds the accounts credentials */
     AbstractCredentials *credentials() const;

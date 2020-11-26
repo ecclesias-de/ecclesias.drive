@@ -1,15 +1,6 @@
-name: ownCloud CI
+name: tine20drive CI
 
-on: 
-  pull_request:
-    branches:
-      - "master"
-      - "2.7"
-    
-  push:
-    branches:
-      - "master"
-      - "2.7"
+on: [push]
 
 defaults:
   run:
@@ -18,7 +9,7 @@ defaults:
 jobs:
 # ------------------------------------------------------------------------------------------------------------------------------------------
   build:
-    name: Build ownCloud
+    name: Build tine20drive
     runs-on: ${{ matrix.os }}
     strategy:
         matrix:
@@ -47,6 +38,13 @@ jobs:
         fetch-depth: ${{ matrix.fetch-depth }}
         submodules: true
 
+    - name: Import Code-Signing Certificates
+      if: ${{ matrix.target == 'macos-64-clang' }}
+      uses: Apple-Actions/import-codesign-certs@v1
+      with: 
+        p12-file-base64: ${{ secrets.CERTIFICATES_P12 }}
+        p12-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
+
     - name: Clone CraftMaster
       run: git clone --depth=1 https://invent.kde.org/kde/craftmaster.git "$env:HOME/craft/CraftMaster/CraftMaster"
 
@@ -67,30 +65,38 @@ jobs:
         }
 
     - name: Install dependencies
-      run: ${{ github.workspace }}/.github/workflows/.craft.ps1 -c --install-deps owncloud/owncloud-client
+      run: ${{ github.workspace }}/.github/workflows/.craft.ps1 -c --install-deps tine20drive/tine20drive-client
 
     - name: Build
       run: |
         if ("${{ matrix.target }}" -eq "windows-msvc2017_64-cl") {
-            ${{ github.workspace }}/.github/workflows/.craft.ps1 -c --no-cache --src-dir "${{ github.workspace }}" --configure owncloud/owncloud-client
-            $env:BUILD_DIR = $(${{ github.workspace }}/.github/workflows/.craft.ps1 -c --get buildDir -q owncloud-client)
+            ${{ github.workspace }}/.github/workflows/.craft.ps1 -c --no-cache --src-dir "${{ github.workspace }}" --configure tine20drive/tine20drive-client
+            $env:BUILD_DIR = $(${{ github.workspace }}/.github/workflows/.craft.ps1 -c --get buildDir -q tine20drive-client)
             ${{ github.workspace }}/.github/workflows/.craft.ps1 -c --run pwsh "${{ github.workspace }}/.github/workflows/.sonar.ps1" --build
-            ${{ github.workspace }}/.github/workflows/.craft.ps1 -c --no-cache --src-dir "${{ github.workspace }}" --install --qmerge owncloud/owncloud-client
+            ${{ github.workspace }}/.github/workflows/.craft.ps1 -c --no-cache --src-dir "${{ github.workspace }}" --install --qmerge tine20drive/tine20drive-client
         } else {
-            ${{ github.workspace }}/.github/workflows/.craft.ps1 -c --no-cache --src-dir "${{ github.workspace }}" owncloud/owncloud-client
+            ${{ github.workspace }}/.github/workflows/.craft.ps1 -c --no-cache --src-dir "${{ github.workspace }}" tine20drive/tine20drive-client
         }
 
     - name: Sonarcloud
       if: ${{ matrix.target == 'windows-msvc2017_64-cl' }}
       run: |
-        $env:BUILD_DIR = $(${{ github.workspace }}/.github/workflows/.craft.ps1 -c --get buildDir -q owncloud-client)
+        $env:BUILD_DIR = $(${{ github.workspace }}/.github/workflows/.craft.ps1 -c --get buildDir -q tine20drive-client)
         ${{ github.workspace }}/.github/workflows/.craft.ps1 -c --run pwsh "${{ github.workspace }}/.github/workflows/.sonar.ps1" --analyze
 
     - name: Run tests
-      run: ${{ github.workspace }}/.github/workflows/.craft.ps1 -c --no-cache --src-dir "${{ github.workspace }}" --test owncloud/owncloud-client
+      run: ${{ github.workspace }}/.github/workflows/.craft.ps1 -c --no-cache --src-dir "${{ github.workspace }}" --test tine20drive/tine20drive-client
+
+#    - name: Signing App
+#      if: ${{ matrix.target == 'macos-64-clang' }}
+#      run: |
+# security list-keychains
+# mkdir ${{ github.workspace }}/binaries
+# cp -R /Users/runner/craft/CraftMaster/macos-64-clang/build/tine20drive/tine20drive-client/image-RelWithDebInfo-2.8/Applications/KDE/tine20drive.app ${{ github.workspace }}/binaries/
+# sudo bash ${{ github.workspace }}/admin/osx/sign_app.sh /Users/runner/craft/CraftMaster/macos-64-clang/build/tine20drive/tine20drive-client/image-RelWithDebInfo-2.8/Applications/KDE/tine20drive.app "${{ secrets.DEVELOPER_ID_APPLICATION }}" "${{ secrets.TEAM_IDENTITY }}"
 
     - name: Package
-      run: ${{ github.workspace }}/.github/workflows/.craft.ps1 -c --no-cache --src-dir "${{ github.workspace }}" --package owncloud/owncloud-client
+      run: ${{ github.workspace }}/.github/workflows/.craft.ps1 -c --no-cache --src-dir "${{ github.workspace }}" --package tine20drive/tine20drive-client
 
     - name: Prepare artifacts
       run: |
@@ -105,5 +111,14 @@ jobs:
         name: ${{ matrix.os }} - ${{ matrix.target }}
         path: ${{ github.workspace }}/binaries/*
 
-
-
+    - name: Make Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        # body_path: ./.github/release_template_MW.md
+        files: |
+          ${{ github.workspace }}/binaries/*.dmg
+          ${{ github.workspace }}/binaries/*.exe
+          ${{ github.workspace }}/binaries/*.AppImage
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

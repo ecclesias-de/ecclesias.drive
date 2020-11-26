@@ -108,7 +108,7 @@ void HttpCredentialsGui::showDialog()
 
     QString reqTxt = requestAppPasswordText(_account);
     if (!reqTxt.isEmpty()) {
-        msg += QLatin1String("<br>") + reqTxt + QLatin1String("<br>");
+        //msg += QLatin1String("<br>") + reqTxt + QLatin1String("<br>");
     }
     if (!_fetchErrorString.isEmpty()) {
         msg += QLatin1String("<br>")
