@@ -27,8 +27,8 @@ logs.
 
 ```Template for output < 10 lines```
 
-1. Client logfile: Output of `tine20drive --logwindow` or `tine20drive --logfile log.txt`
-(On Windows using `cmd.exe`, you might need to first `cd` into the tine20drive directory)
+1. Client logfile: Output of `ecclesiasdrive --logwindow` or `ecclesiasdrive --logfile log.txt`
+(On Windows using `cmd.exe`, you might need to first `cd` into the ecclesiasdrive directory)
 
 
 

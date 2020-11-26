@@ -59,7 +59,7 @@ $pkgbuild -F $install_path $prjfile
 rc=$?
 
 if [ $rc == 0 ]; then
-  cp /Users/runner/work/tine20Drive/tine20Drive/CraftMaster/macos-64-clang/*.pkg $install_path/
+  cp /Users/runner/work/ecclesiasdrive/ecclesiasdrive/CraftMaster/macos-64-clang/*.pkg $install_path/
   echo "Successfully created $installer_file"
 else
   echo "Failed to create $installer_file"
@@ -91,7 +91,7 @@ fi
 
 cd $install_path
 
-#xcrun altool --notarize-app --primary-bundle-id "com.tine20.desktopclient" --username "$apple_id" --password "$apple_app_password" --asc-provider "$provider" --file "$installer_file" &> tmp
+#xcrun altool --notarize-app --primary-bundle-id "com.tine20.ecclesiasdesktopclient" --username "$apple_id" --password "$apple_app_password" --asc-provider "$provider" --file "$installer_file" &> tmp
 #uuid=`cat tmp | grep -Eo '\\w{8}-(\\w{4}-){3}\\w{12}$'`
 #while true; do
 #    echo "checking for notarization..."

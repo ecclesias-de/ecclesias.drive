@@ -57,7 +57,7 @@
             <string notr="true"/>
            </property>
            <property name="pixmap">
-            <pixmap resource="../../core_theme.qrc">:/client/tine20drive/theme/colored/tine20drive-icon.svg</pixmap>
+            <pixmap resource="../../core_theme.qrc">:/client/ecclesiasdrive/theme/colored/ecclesiasdrive-icon.svg</pixmap>
            </property>
           </widget>
          </item>

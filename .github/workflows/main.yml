@@ -1,4 +1,4 @@
-name: tine20drive CI
+name: ecclesiasdrive CI
 
 on: [push]
 
@@ -9,7 +9,7 @@ defaults:
 jobs:
 # ------------------------------------------------------------------------------------------------------------------------------------------
   build:
-    name: Build tine20drive
+    name: Build ecclesiasdrive
     runs-on: ${{ matrix.os }}
     strategy:
         matrix:
@@ -65,38 +65,38 @@ jobs:
         }
 
     - name: Install dependencies
-      run: ${{ github.workspace }}/.github/workflows/.craft.ps1 -c --install-deps tine20drive/tine20drive-client
+      run: ${{ github.workspace }}/.github/workflows/.craft.ps1 -c --install-deps ecclesiasdrive/ecclesiasdrive-client
 
     - name: Build
       run: |
         if ("${{ matrix.target }}" -eq "windows-msvc2017_64-cl") {
-            ${{ github.workspace }}/.github/workflows/.craft.ps1 -c --no-cache --src-dir "${{ github.workspace }}" --configure tine20drive/tine20drive-client
-            $env:BUILD_DIR = $(${{ github.workspace }}/.github/workflows/.craft.ps1 -c --get buildDir -q tine20drive-client)
+            ${{ github.workspace }}/.github/workflows/.craft.ps1 -c --no-cache --src-dir "${{ github.workspace }}" --configure ecclesiasdrive/ecclesiasdrive-client
+            $env:BUILD_DIR = $(${{ github.workspace }}/.github/workflows/.craft.ps1 -c --get buildDir -q ecclesiasdrive-client)
             ${{ github.workspace }}/.github/workflows/.craft.ps1 -c --run pwsh "${{ github.workspace }}/.github/workflows/.sonar.ps1" --build
-            ${{ github.workspace }}/.github/workflows/.craft.ps1 -c --no-cache --src-dir "${{ github.workspace }}" --install --qmerge tine20drive/tine20drive-client
+            ${{ github.workspace }}/.github/workflows/.craft.ps1 -c --no-cache --src-dir "${{ github.workspace }}" --install --qmerge ecclesiasdrive/ecclesiasdrive-client
         } else {
-            ${{ github.workspace }}/.github/workflows/.craft.ps1 -c --no-cache --src-dir "${{ github.workspace }}" tine20drive/tine20drive-client
+            ${{ github.workspace }}/.github/workflows/.craft.ps1 -c --no-cache --src-dir "${{ github.workspace }}" ecclesiasdrive/ecclesiasdrive-client
         }
 
     - name: Sonarcloud
       if: ${{ matrix.target == 'windows-msvc2017_64-cl' }}
       run: |
-        $env:BUILD_DIR = $(${{ github.workspace }}/.github/workflows/.craft.ps1 -c --get buildDir -q tine20drive-client)
+        $env:BUILD_DIR = $(${{ github.workspace }}/.github/workflows/.craft.ps1 -c --get buildDir -q ecclesiasdrive-client)
         ${{ github.workspace }}/.github/workflows/.craft.ps1 -c --run pwsh "${{ github.workspace }}/.github/workflows/.sonar.ps1" --analyze
 
     - name: Run tests
-      run: ${{ github.workspace }}/.github/workflows/.craft.ps1 -c --no-cache --src-dir "${{ github.workspace }}" --test tine20drive/tine20drive-client
+      run: ${{ github.workspace }}/.github/workflows/.craft.ps1 -c --no-cache --src-dir "${{ github.workspace }}" --test ecclesiasdrive/ecclesiasdrive-client
 
 #    - name: Signing App
 #      if: ${{ matrix.target == 'macos-64-clang' }}
 #      run: |
 # security list-keychains
 # mkdir ${{ github.workspace }}/binaries
-# cp -R /Users/runner/craft/CraftMaster/macos-64-clang/build/tine20drive/tine20drive-client/image-RelWithDebInfo-2.8/Applications/KDE/tine20drive.app ${{ github.workspace }}/binaries/
-# sudo bash ${{ github.workspace }}/admin/osx/sign_app.sh /Users/runner/craft/CraftMaster/macos-64-clang/build/tine20drive/tine20drive-client/image-RelWithDebInfo-2.8/Applications/KDE/tine20drive.app "${{ secrets.DEVELOPER_ID_APPLICATION }}" "${{ secrets.TEAM_IDENTITY }}"
+# cp -R /Users/runner/craft/CraftMaster/macos-64-clang/build/ecclesiasdrive/ecclesiasdrive-client/image-RelWithDebInfo-2.8/Applications/KDE/ecclesiasdrive.app ${{ github.workspace }}/binaries/
+# sudo bash ${{ github.workspace }}/admin/osx/sign_app.sh /Users/runner/craft/CraftMaster/macos-64-clang/build/ecclesiasdrive/ecclesiasdrive-client/image-RelWithDebInfo-2.8/Applications/KDE/ecclesiasdrive.app "${{ secrets.DEVELOPER_ID_APPLICATION }}" "${{ secrets.TEAM_IDENTITY }}"
 
     - name: Package
-      run: ${{ github.workspace }}/.github/workflows/.craft.ps1 -c --no-cache --src-dir "${{ github.workspace }}" --package tine20drive/tine20drive-client
+      run: ${{ github.workspace }}/.github/workflows/.craft.ps1 -c --no-cache --src-dir "${{ github.workspace }}" --package ecclesiasdrive/ecclesiasdrive-client
 
     - name: Prepare artifacts
       run: |

@@ -304,7 +304,7 @@ QString Theme::defaultServerFolder() const
 
 QString Theme::helpUrl() const
 {
-    return QStringLiteral("https://tine20.com").arg(MIRALL_VERSION_MAJOR).arg(MIRALL_VERSION_MINOR);
+    return QStringLiteral("https://www.ecclesias.de/hilfe/").arg(MIRALL_VERSION_MAJOR).arg(MIRALL_VERSION_MINOR);
 }
 
 QString Theme::conflictHelpUrl() const
@@ -380,7 +380,7 @@ QString Theme::gitSHA1(VersionFormat format) const
     if (!aboutShowCopyright()) {
         return gitShahSort;
     }
-    const auto gitUrl = QStringLiteral("https://github.com/tine20/tine20Drive/commit/%1").arg(gitSha);
+    const auto gitUrl = QStringLiteral("https://github.com/ecclesias-de/ecclesias.drive/commit/%1").arg(gitSha);
     switch (format) {
     case Theme::VersionFormat::Plain:
         return gitShahSort;
@@ -430,7 +430,7 @@ QString Theme::about() const
     // changing the location of the settings and other registery keys.
     const QString vendor = isVanilla() ? QStringLiteral("ownCloud GmbH") : QStringLiteral(APPLICATION_VENDOR);
     return tr("<p>Version %1. For more information visit <a href=\"%2\">https://%3</a></p>"
-              "<p>For known issues and help, please visit: <a href=\"https://github.com/tine20/tine20Drive/issues\">https://github.com/tine20/tine20Drive/issues</a></p>"
+              "<p>For known issues and help, please visit: <a href=\"https://github.com/ecclesias-de/ecclesias.drive/issues\">https://github.com/ecclesias-de/ecclesias.drive/issues</a></p>"
               "<p><small>By Klaas Freitag, Daniel Molkentin, Olivier Goffart, Markus Götz, "
               " Jan-Christoph Borchardt, Thomas Müller, Dominik Schmidt, Michael Stingl, Hannah von Reth, and others.</small></p>"
               "<p>Copyright ownCloud GmbH</p>"
