@@ -1,77 +1,39 @@
-# ownCloud Desktop Client
-
-[![Build Status](https://drone.owncloud.com/api/badges/owncloud/client/status.svg)](https://drone.owncloud.com/owncloud/client) [![Build Status](https://github.com/owncloud/client/workflows/ownCloud%20CI/badge.svg)](https://github.com/owncloud/client/actions)
-
+# Ecclesias Drive 
 
 ## Introduction
 
-The ownCloud Desktop Client is a tool to synchronize files from ownCloud Server
+The Ecclesias Drive is a tool to synchronize files from the Server
 with your computer.
 
-## Download
 
-### Binary packages
+### [Latest packages](https://github.com/ecclesias-de/ecclesias.drive/releases)
 
-* Refer to the download page https://owncloud.org/download/#owncloud-desktop-client
+---
 
-### Source code
+## Installation 
 
-The ownCloud Desktop Client is developed in Git. Since Git makes it easy to
+#### macOS 
+
+- Install .pkg file from github.
+
+#### Windows
+
+- Install .exe file from github.
+
+---
+
+## Source code
+
+The Ecclesias is developed in Git. Since Git makes it easy to
 fork and improve the source code and to adapt it to your need, many copies
 can be found on the Internet, in particular on GitHub. However, the
 authoritative repository maintained by the developers is located at
-https://github.com/owncloud/client.
+https://github.com/ecclesias-de/ecclesias.drive.
 
-## Building the source code
-
-[Building the Client](https://doc.owncloud.org/desktop/building.html)
-in the ownCloud Desktop Client manual.
-
-## Reporting issues and contributing
+## Reporting issues 
 
 If you find any bugs or have any suggestion for improvement, please
-file an issue at https://github.com/owncloud/client/issues. Do not
-contact the authors directly by mail, as this increases the chance
-of your report being lost.
-
-If you created a patch, please submit a [Pull
-Request](https://github.com/owncloud/client/pulls). For non-trivial
-patches, we need you to sign the [Contributor
-Agreement](https://owncloud.org/contribute/agreement) before
-we can accept your patch.
-
-If you want to contact us, e.g. before starting a more complex feature,
-you can join us at
-[#owncloud-client-dev](irc://irc.freenode.net/#owncloud-client-dev).
-
-## Maintainers and Contributors
-
-The current maintainers of this repository are:
-
-* Hannah von Reth <hannah.vonreth@owncloud.com>
-* Dominik Schmidt <dev@dominik-schmidt.de>
-* Markus Goetz <guruz@owncloud.com>
-* Olivier Goffart <ogoffart@owncloud.com>
-* Christian Kamm <mail@ckamm.de>
-
-ownCloud Desktop Client is developed by the ownCloud community and [receives
-patches from a variety of authors](https://github.com/owncloud/client/graphs/contributors).
-
-Past maintainers:
-
-* Thomas Müller <thomas.mueller@owncloud.com>
-* Klaas Freitag <freitag@owncloud.com>
-* Daniel Molkentin <daniel@molkentin.de>
-* Andreas Schneider <asn@cryptomilk.org>
-
-## Building the Documentation
-
-The documentation has been migrated from Sphinx-Doc to [Antora](https://docs.antora.org/), which is based on [the AsciiDoc format](https://github.com/owncloud/docs/blob/master/docs/getting-started.md).
-For the moment, it is not possible to generate the client documentation directly, as was previously the case, via a CMake command.
-Instead, the client documentation is built when the entire ownCloud documentation is built; (this is a combination of the _administration_, _developer_, and _user_, _iOS_, and _Android_ manuals).
-
-**Please note:** investigations are underway to see if it can be built both standalone and as as part of the larger documentation bundle.
-This README will be updated as more information is available.
+file an issue at https://github.com/ecclesias-de/ecclesias.drive/issues.
 
 ## License
 
