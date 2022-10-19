@@ -20,6 +20,9 @@ with your computer.
 
 - Install .exe file from github.
 
+#### Linux
+- Currently we dont support any format of linux package from OpenSUSE nor from github.
+
 ---
 
 ## Source code
