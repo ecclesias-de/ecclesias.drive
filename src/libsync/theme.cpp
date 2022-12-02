@@ -35,7 +35,7 @@
 namespace {
 QString vanillaThemePath()
 {
-    return QStringLiteral(":/client/ownCloud/theme");
+    return QStringLiteral(":/client/tineDrive/theme");
 }
 
 QString brandThemePath()
@@ -284,7 +284,7 @@ QString Theme::defaultServerFolder() const
 
 QString Theme::helpUrl() const
 {
-    return QStringLiteral("https://doc.owncloud.org/desktop/%1.%2/").arg(OCC::Version::version().majorVersion()).arg(OCC::Version::version().microVersion());
+    return QStringLiteral("https://tine20.com");
 }
 
 QString Theme::conflictHelpUrl() const
@@ -344,7 +344,7 @@ bool Theme::monoIconsAvailable() const
 
 QString Theme::updateCheckUrl() const
 {
-    return QStringLiteral("https://updates.owncloud.com/client/");
+    return QStringLiteral("https://api.tine20.net/driveClientUpdateCheck/");
 }
 
 qint64 Theme::newBigFolderSizeLimit() const
@@ -374,7 +374,7 @@ QString Theme::gitSHA1(VersionFormat format) const
     if (!aboutShowCopyright()) {
         return gitShahSort;
     }
-    const auto gitUrl = QStringLiteral("https://github.com/owncloud/client/commit/%1").arg(Version::gitSha());
+    const auto gitUrl = QStringLiteral("https://github.com/tine20/tineDrive/commit/%1").arg(Version::gitSha());
     switch (format) {
     case Theme::VersionFormat::OneLiner:
         Q_FALLTHROUGH();
@@ -447,13 +447,14 @@ QString Theme::about() const
     // changing the location of the settings and other registery keys.
     const QString vendor = isVanilla() ? QStringLiteral("ownCloud GmbH") : QStringLiteral(APPLICATION_VENDOR);
     return tr("<p>Version %1. For more information visit <a href=\"%2\">https://%3</a></p>"
-              "<p>For known issues and help, please visit: <a href=\"https://central.owncloud.org/c/desktop-client\">https://central.owncloud.org</a></p>"
+              "<p>For known issues and help, please visit: <a href=\"https://github.com/tine20/tineDrive/issues\">https://github.com/tine20/tineDrive/issues</a></p>"
               "<p><small>By Klaas Freitag, Daniel Molkentin, Olivier Goffart, Markus Götz, "
               " Jan-Christoph Borchardt, Thomas Müller,<br>"
               "Dominik Schmidt, Michael Stingl, Hannah von Reth, Fabian Müller and others.</small></p>"
               "<p>Copyright ownCloud GmbH</p>"
               "<p>Distributed by %4 and licensed under the GNU General Public License (GPL) Version 2.0.<br/>"
-              "%5 and the %5 logo are registered trademarks of %4 in the "
+              "%5 and the %5 logo are registered trademarks.</p>"
+              "<p><br/>ownCloud and the ownCloud logo are registered trademarks of ownCloud GmbH in the "
               "United States, other countries, or both.</p>"
               "<p><small>%6</small></p>")
         .arg(Utility::escape(Version::displayString()),

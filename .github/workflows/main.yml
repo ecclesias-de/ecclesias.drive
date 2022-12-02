@@ -1,13 +1,6 @@
-name: ownCloud CI
+name: tineDrive CI
 
-on:
-  push:
-    branches:
-      - master
-      - '[0-9]+.*'
-  pull_request:
-  
-permissions: {}
+on: [push]
 
 defaults:
   run:
@@ -76,42 +69,42 @@ jobs:
 
     - name: Prepare
       run: |
-        & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --set forceAsserts=true owncloud/owncloud-client
+        & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --set forceAsserts=true tineDrive/tineDrive-client
         if ($IsWindows) {
             & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c dev-utils/nsis
         } elseif($IsLinux) {
             & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c dev-utils/linuxdeploy
-            & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --set enableLibcloudproviders=true owncloud/owncloud-client
+            & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --set enableLibcloudproviders=true tineDrive/tineDrive-client
         }
 
     - name: Install dependencies
       run: |
-        & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --install-deps owncloud/owncloud-client
+        & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --install-deps tineDrive/tineDrive-client
 
     - name: Build
       run: |
         if ("${{ matrix.target }}" -eq "windows-msvc2019_64-cl") {
-            & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --no-cache --src-dir "${env:GITHUB_WORKSPACE}" --configure owncloud/owncloud-client
-            $env:BUILD_DIR = $(& "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --get buildDir -q owncloud-client)
+            & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --no-cache --src-dir "${env:GITHUB_WORKSPACE}" --configure tineDrive/tineDrive-client
+            $env:BUILD_DIR = $(& "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --get buildDir -q tineDrive-client)
             & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --run pwsh "${env:GITHUB_WORKSPACE}/.github/workflows/.sonar.ps1" --build
-            & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --no-cache --src-dir "${env:GITHUB_WORKSPACE}" --install --qmerge owncloud/owncloud-client
+            & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --no-cache --src-dir "${env:GITHUB_WORKSPACE}" --install --qmerge tineDrive/tineDrive-client
         } else {
-            & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --no-cache --src-dir "${env:GITHUB_WORKSPACE}" owncloud/owncloud-client
+            & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --no-cache --src-dir "${env:GITHUB_WORKSPACE}" tineDrive/tineDrive-client
         }
 
     - name: Run tests
       run: |
-        & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --no-cache --src-dir "${env:GITHUB_WORKSPACE}" --test owncloud/owncloud-client
+        & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --no-cache --src-dir "${env:GITHUB_WORKSPACE}" --test tineDrive/tineDrive-client
 
     - name: Sonarcloud
       if: ${{ matrix.target == 'windows-msvc2019_64-cl' }}
       run: |
-        $env:BUILD_DIR = $(& "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --get buildDir -q owncloud-client)
+        $env:BUILD_DIR = $(& "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --get buildDir -q tineDrive-client)
         & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --run pwsh "${env:GITHUB_WORKSPACE}/.github/workflows/.sonar.ps1" --analyze
 
     - name: Package
       run: |
-        & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --no-cache --src-dir "${env:GITHUB_WORKSPACE}" --package owncloud/owncloud-client
+        & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --no-cache --src-dir "${env:GITHUB_WORKSPACE}" --package tineDrive/tineDrive-client
 
     - name: Prepare artifacts
       run: |
