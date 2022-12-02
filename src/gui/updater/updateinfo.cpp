@@ -55,8 +55,8 @@ QString UpdateInfo::downloadUrl() const
 
 UpdateInfo UpdateInfo::parseElement(const QDomElement &element, bool *ok)
 {
-    if (element.tagName() != QLatin1String("tineDrive")) {
-        qCCritical(lcUpdater) << "Expected 'tineDrive', got '" << element.tagName() << "'.";
+    if (element.tagName() != QLatin1String("ecclesiasdrive")) {
+        qCCritical(lcUpdater) << "Expected 'ecclesiasdrive', got '" << element.tagName() << "'.";
         if (ok)
             *ok = false;
         return UpdateInfo();

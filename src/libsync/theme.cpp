@@ -35,7 +35,7 @@
 namespace {
 QString vanillaThemePath()
 {
-    return QStringLiteral(":/client/tineDrive/theme");
+    return QStringLiteral(":/client/ecclesiasdrive/theme");
 }
 
 QString brandThemePath()
@@ -284,7 +284,7 @@ QString Theme::defaultServerFolder() const
 
 QString Theme::helpUrl() const
 {
-    return QStringLiteral("https://tine20.com");
+    return QStringLiteral("https://www.ecclesias.de/hilfe/");
 }
 
 QString Theme::conflictHelpUrl() const
@@ -374,7 +374,7 @@ QString Theme::gitSHA1(VersionFormat format) const
     if (!aboutShowCopyright()) {
         return gitShahSort;
     }
-    const auto gitUrl = QStringLiteral("https://github.com/tine20/tineDrive/commit/%1").arg(Version::gitSha());
+    const auto gitUrl = QStringLiteral("https://github.com/ecclesias-de/ecclesiasdrive/commit/%1").arg(Version::gitSha());
     switch (format) {
     case Theme::VersionFormat::OneLiner:
         Q_FALLTHROUGH();
@@ -447,7 +447,7 @@ QString Theme::about() const
     // changing the location of the settings and other registery keys.
     const QString vendor = isVanilla() ? QStringLiteral("ownCloud GmbH") : QStringLiteral(APPLICATION_VENDOR);
     return tr("<p>Version %1. For more information visit <a href=\"%2\">https://%3</a></p>"
-              "<p>For known issues and help, please visit: <a href=\"https://github.com/tine20/tineDrive/issues\">https://github.com/tine20/tineDrive/issues</a></p>"
+              "<p>For known issues and help, please visit: <a href=\"https://github.com/ecclesias-de/ecclesiasdrive/issues\">https://github.com/ecclesias-de/ecclesiasdrive/issues</a></p>"
               "<p><small>By Klaas Freitag, Daniel Molkentin, Olivier Goffart, Markus Götz, "
               " Jan-Christoph Borchardt, Thomas Müller,<br>"
               "Dominik Schmidt, Michael Stingl, Hannah von Reth, Fabian Müller and others.</small></p>"
