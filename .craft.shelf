@@ -1,6 +1,6 @@
 [General]
 version = 2
-blueprintrepositories = https://github.com/tine20/craft-blueprints-tineDrive.git|3.0.0-tineDrive|;https://invent.kde.org/packaging/craft-blueprints-kde.git|master|
+blueprintrepositories = https://github.com/ecclesias-de/craft-blueprints-ecclesiasdrive.git|3.0.0-ecclesiasdrive|;https://invent.kde.org/packaging/craft-blueprints-kde.git|master|
 
 [core/cacert]
 version = 2022-04-26
@@ -9,9 +9,9 @@ version = 2022-04-26
 version = master
 revision = 1e62aa59
 
-[craft/craft-blueprints-tineDrive]
-version = 3.0.0-tineDrive
-revision = e8969d5
+[craft/craft-blueprints-ecclesiasdrive]
+version = 3.0.0-ecclesiasdrive
+revision = 72a1747
 
 [craft/craft-core]
 version = master

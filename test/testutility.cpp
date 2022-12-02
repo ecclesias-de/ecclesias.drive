@@ -118,7 +118,7 @@ private slots:
         qDebug() << "Version of installed ownCloud Binary: " << ver;
         QVERIFY(!ver.isEmpty());
 
-        QRegExp rx(APPLICATION_SHORTNAME "cmd tineDrive \\d+\\.\\d+\\.\\d+.*", Qt::CaseInsensitive);
+        QRegExp rx(APPLICATION_SHORTNAME "cmd ecclesiasdrive \\d+\\.\\d+\\.\\d+.*", Qt::CaseInsensitive);
         qDebug() << rx.pattern();
         QVERIFY(rx.exactMatch(ver));
     }
