@@ -1,4 +1,4 @@
-name: tineDrive CI
+name: ecclesiasdrive CI
 
 on: [push]
 
@@ -69,42 +69,42 @@ jobs:
 
     - name: Prepare
       run: |
-        & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --set forceAsserts=true tineDrive/tineDrive-client
+        & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --set forceAsserts=true ecclesiasdrive/ecclesiasdrive-client
         if ($IsWindows) {
             & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c dev-utils/nsis
         } elseif($IsLinux) {
             & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c dev-utils/linuxdeploy
-            & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --set enableLibcloudproviders=true tineDrive/tineDrive-client
+            & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --set enableLibcloudproviders=true ecclesiasdrive/ecclesiasdrive-client
         }
 
     - name: Install dependencies
       run: |
-        & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --install-deps tineDrive/tineDrive-client
+        & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --install-deps ecclesiasdrive/ecclesiasdrive-client
 
     - name: Build
       run: |
         if ("${{ matrix.target }}" -eq "windows-msvc2019_64-cl") {
-            & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --no-cache --src-dir "${env:GITHUB_WORKSPACE}" --configure tineDrive/tineDrive-client
-            $env:BUILD_DIR = $(& "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --get buildDir -q tineDrive-client)
+            & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --no-cache --src-dir "${env:GITHUB_WORKSPACE}" --configure ecclesiasdrive/ecclesiasdrive-client
+            $env:BUILD_DIR = $(& "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --get buildDir -q ecclesiasdrive-client)
             & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --run pwsh "${env:GITHUB_WORKSPACE}/.github/workflows/.sonar.ps1" --build
-            & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --no-cache --src-dir "${env:GITHUB_WORKSPACE}" --install --qmerge tineDrive/tineDrive-client
+            & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --no-cache --src-dir "${env:GITHUB_WORKSPACE}" --install --qmerge ecclesiasdrive/ecclesiasdrive-client
         } else {
-            & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --no-cache --src-dir "${env:GITHUB_WORKSPACE}" tineDrive/tineDrive-client
+            & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --no-cache --src-dir "${env:GITHUB_WORKSPACE}" ecclesiasdrive/ecclesiasdrive-client
         }
 
     - name: Run tests
       run: |
-        & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --no-cache --src-dir "${env:GITHUB_WORKSPACE}" --test tineDrive/tineDrive-client
+        & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --no-cache --src-dir "${env:GITHUB_WORKSPACE}" --test ecclesiasdrive/ecclesiasdrive-client
 
     - name: Sonarcloud
       if: ${{ matrix.target == 'windows-msvc2019_64-cl' }}
       run: |
-        $env:BUILD_DIR = $(& "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --get buildDir -q tineDrive-client)
+        $env:BUILD_DIR = $(& "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --get buildDir -q ecclesiasdrive-client)
         & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --run pwsh "${env:GITHUB_WORKSPACE}/.github/workflows/.sonar.ps1" --analyze
 
     - name: Package
       run: |
-        & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --no-cache --src-dir "${env:GITHUB_WORKSPACE}" --package tineDrive/tineDrive-client
+        & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --no-cache --src-dir "${env:GITHUB_WORKSPACE}" --package ecclesiasdrive/ecclesiasdrive-client
 
     - name: Prepare artifacts
       run: |

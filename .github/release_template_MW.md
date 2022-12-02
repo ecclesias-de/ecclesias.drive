@@ -29,6 +29,6 @@
 ---
 - Build : fix tine20 file system link
 - Build : fix Qt5.15 configuration
-- Build : change tineDrive-creaft-blueprint source link 
+- Build : change ecclesiasdrive-creaft-blueprint source link 
 
  
