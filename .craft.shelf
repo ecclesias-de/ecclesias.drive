@@ -11,7 +11,7 @@ revision = 1e62aa59
 
 [craft/craft-blueprints-ecclesiasdrive]
 version = 3.0.0-ecclesiasdrive
-revision = 72a1747
+revision = fb82e79
 
 [craft/craft-core]
 version = master

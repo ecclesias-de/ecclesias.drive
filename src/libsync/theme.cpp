@@ -35,7 +35,7 @@
 namespace {
 QString vanillaThemePath()
 {
-    return QStringLiteral(":/client/ownCloud/theme");
+    return QStringLiteral(":/client/ecclesiasdrive/theme");
 }
 
 QString brandThemePath()
