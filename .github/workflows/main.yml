@@ -1,14 +1,8 @@
-name: ownCloud CI
+name: ecclesiasdrive CI
 
-on:
-  push:
-    branches:
-      - master
-      - '[0-9]+'
-  pull_request:
-  workflow_dispatch:
+on: [push]
 
-concurrency: 
+concurrency:
   group: ${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
@@ -32,7 +26,7 @@ jobs:
               target: windows-cl-msvc2022-x86_64
               os: windows-latest
               container:
-              useSonarCloud: ${{ github.event_name != 'pull_request' }}
+              useSonarCloud:
             # TODO: align the target with the name
             - name: macos-clang-arm64
               target: macos-clang-arm64
@@ -52,6 +46,8 @@ jobs:
       CRAFT_TARGET: ${{ matrix.target }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      APP_VERSION: "6.0.3.1"
+      APP_NAME: "ecclesiasdrive"
 
     container: ${{ matrix.container }}
 
@@ -92,8 +88,8 @@ jobs:
     - name: Prepare
       run: |
         New-Item -ItemType Directory "${env:GITHUB_WORKSPACE}/binaries/"
-        & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --set forceAsserts=true owncloud/owncloud-client
-        & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --set srcDir="${env:GITHUB_WORKSPACE}" owncloud/owncloud-client
+        & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --set forceAsserts=true ecclesiasdrive/ecclesiasdrive-client
+        & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --set srcDir="${env:GITHUB_WORKSPACE}" ecclesiasdrive/ecclesiasdrive-client
         if ($IsWindows) {
             & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c dev-utils/nsis
         } elseif($IsLinux) {
@@ -104,11 +100,11 @@ jobs:
       run: |
           if ("${{ matrix.target }}" -eq "linux-64-gcc" ) {
               # build with appimage updater and others
-              & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --set enableAppImageUpdater=true owncloud-client
-              & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --set enableCrashReporter=true owncloud/owncloud-client
-              & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --set enableAutoUpdater=true owncloud/owncloud-client
+              & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --set enableAppImageUpdater=false ecclesiasdrive-client
+              & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --set enableCrashReporter=false ecclesiasdrive/ecclesiasdrive-client
+              & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --set enableAutoUpdater=false ecclesiasdrive/ecclesiasdrive-client
           }
-          & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --install-deps owncloud/owncloud-client
+          & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --install-deps ecclesiasdrive/ecclesiasdrive-client
 
     - name: QML format lint
       if: matrix.name  == 'linux-gcc-x86_64'
@@ -137,32 +133,64 @@ jobs:
       run: |
         if ("${{ matrix.target }}" -eq "linux-64-gcc" ) {
             # build with appimage updater and others
-            & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --set enableAppImageUpdater=true owncloud-client
-            & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --set enableCrashReporter=true owncloud/owncloud-client
-            & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --set enableAutoUpdater=true owncloud/owncloud-client
+            & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --set enableAppImageUpdater=false ecclesiasdrive-client
+            & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --set enableCrashReporter=false ecclesiasdrive/ecclesiasdrive-client
+            & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --set enableAutoUpdater=false ecclesiasdrive/ecclesiasdrive-client
         }
-        & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --no-cache owncloud/owncloud-client
+        & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --no-cache ecclesiasdrive/ecclesiasdrive-client
 
     - name: Build for SonarCloud
       if: ${{ matrix.useSonarCloud }}
       run: |
-        & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --no-cache --configure owncloud/owncloud-client
-        $env:BUILD_DIR = $(& "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --get buildDir -q owncloud-client)
+        & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --no-cache --configure ecclesiasdrive/ecclesiasdrive-client
+        $env:BUILD_DIR = $(& "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --get buildDir -q ecclesiasdrive-client)
         & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --run pwsh "${env:GITHUB_WORKSPACE}/.github/workflows/.sonar.ps1" --build
-        & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --no-cache --install --qmerge owncloud/owncloud-client
+        & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --no-cache --install --qmerge ecclesiasdrive/ecclesiasdrive-client
         & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --run pwsh "${env:GITHUB_WORKSPACE}/.github/workflows/.sonar.ps1" --analyze
 
     - name: Run tests
       run: |
-        & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --no-cache --test owncloud/owncloud-client
+        & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --no-cache --test ecclesiasdrive/ecclesiasdrive-client
 
     - name: Package
       run: |
         if ("${{ matrix.target }}" -eq "linux-64-gcc" ) {
             # package without crash reporter
-            & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --set enableCrashReporter=false owncloud/owncloud-client
+            & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --set enableCrashReporter=false ecclesiasdrive/ecclesiasdrive-client
         }
-        & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --no-cache --package owncloud/owncloud-client
+        & "${env:GITHUB_WORKSPACE}/.github/workflows/.craft.ps1" -c --no-cache --package ecclesiasdrive/ecclesiasdrive-client
+
+    - name: Build MSI (WiX v3)
+      if: matrix.name == 'windows-cl-x86_64'
+      run: |
+        $env:PATH = "$env:PATH;C:\Program Files (x86)\WiX Toolset v3.14\bin"
+        
+        $exePath = Get-ChildItem "$env:HOME/craft/binaries/*.exe" |
+        Where-Object { $_.Name -notlike "*vc_redist*" } |
+        Select-Object -First 1
+        
+        if (-not $exePath) {
+        Write-Error "No .exe found in craft/binaries"
+        exit 1
+        }
+        
+        $wxsFile = "${env:GITHUB_WORKSPACE}/.github/workflows/installer.wxs"
+        $wixObj  = "D:\installer.wixobj"
+        $msiOut  = "D:\${{ env.APP_NAME }}-${{ env.APP_VERSION }}.msi"
+        $bannerBmp = "${env:GITHUB_WORKSPACE}/src/resources/theme/universal/banner.bmp"
+        $dialogBmp = "${env:GITHUB_WORKSPACE}/src/resources/theme/universal/dialog.bmp"
+        
+        Write-Host "msiOut:  $msiOut"
+        Write-Host "exePath: $exePath"
+        
+        candle.exe "-dWixUIRMOption=UseRM" "-dProductName=${{ env.APP_NAME }}" "-dProductVersion=${{ env.APP_VERSION }}" "-dSourceExe=$($exePath.FullName)" "-dBannerBmp=$bannerBmp" "-dDialogBmp=$dialogBmp" -arch x64 -ext WixUIExtension -ext WixUtilExtension -o $wixObj $wxsFile
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+        light.exe -ext WixUIExtension -ext WixUtilExtension -o $msiOut $wixObj
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        
+        Copy-Item $msiOut "$env:HOME/craft/binaries/"
+        Write-Host "MSI produced: $msiOut"
 
     - name: Prepare artifacts
       run: |
@@ -173,5 +201,5 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ matrix.name }}
+        name: ${{ env.APP_NAME }}-${{ env.APP_VERSION }}-${{ matrix.name }}
         path: ${{ github.workspace }}/binaries/*
