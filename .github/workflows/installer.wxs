@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?define AppName = "$(var.ProductName)" ?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension" >
+
+  <Product Id="*"
+    Name="$(var.AppName)"
+    Language="1033"
+    Version="$(var.ProductVersion)"
+    Manufacturer="Metaways Infosystems GmbH"
+    UpgradeCode="2CE4E68B-9128-4ACE-9905-3481B51A9C97">
+
+
+    <Package InstallerVersion="300" Compressed="yes"
+             InstallScope="perMachine"
+             Platform="x64" />
+
+    <MajorUpgrade
+      DowngradeErrorMessage="A newer version of $(var.AppName) is already installed."
+      Schedule="afterInstallInitialize" />
+
+    <SetProperty Id="WixShellExecTarget"
+                 Value="[INSTALLFOLDER]bin\$(var.AppName).exe"
+                 After="CostFinalize" />
+
+    <util:CloseApplication Id="CloseApp"
+                           Target="$(var.AppName).exe"
+                           CloseMessage="yes"
+                           Timeout="5"
+                           Property="CLOSEAPP" />
+
+    <WixVariable Id="WixUIBannerBmp" Value="$(var.BannerBmp)" />
+    <WixVariable Id="WixUIDialogBmp" Value="$(var.DialogBmp)" />
+
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch $(var.AppName) after setup" />
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1" />
+    <Property Id="ARPSYSTEMCOMPONENT" Value="1" />
+
+    <!-- Registry Search for existing NSIS installation -->
+    <Property Id="NSIS_UNINSTALLER">
+      <RegistrySearch Id="FindNsisUninstaller32"
+                      Root="HKLM"
+                      Key="Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\$(var.AppName)"
+                      Name="UninstallString"
+                      Type="raw"
+                      Win64="no" />
+    </Property>
+
+    <!-- 1. Launch Action (Note: path is now bin\$(var.AppName).exe) -->
+    <CustomAction Id="LaunchApp"
+                  BinaryKey="WixCA"
+                  DllEntry="WixShellExec"
+                  Impersonate="yes" />
+
+    <CustomAction Id="UninstallEXE"
+                  Property="NSIS_UNINSTALLER"
+                  ExeCommand="/S"
+                  Execute="deferred"
+                  Impersonate="no"
+                  Return="ignore" />
+
+    <CustomAction Id="SetCleanupCmd"
+                  Property="CleanupFolder"
+                  Value='"cmd.exe" /c start /B /wait cmd /c &quot;taskkill /F /IM tineDrive.exe /T &amp; if exist &quot;[INSTALLFOLDER]&quot; rd /s /q &quot;[INSTALLFOLDER]&quot;&quot;'
+                  Execute="immediate"/>
+    <CustomAction Id="CleanupFolder" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Impersonate="no" Return="ignore"/>
+
+    <CustomAction Id="InstallEXE"
+                  BinaryKey="SetupExe"
+                  ExeCommand='/S /D=[INSTALLFOLDER]'
+                  Execute="deferred"
+                  Impersonate="no"
+                  Return="check" />
+
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+
+    <UI>
+      <UIRef Id="WixUI_InstallDir" />
+      <Publish Dialog="ExitDialog"
+               Control="Finish"
+               Event="DoAction"
+               Value="LaunchApp"
+               Order="1">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1</Publish>
+      <Publish Dialog="WelcomeDlg"
+               Control="Next"
+               Event="NewDialog"
+               Value="InstallDirDlg"
+               Order="2">1</Publish>
+    </UI>
+
+    <Binary Id="SetupExe" SourceFile="$(var.SourceExe)" />
+
+    <InstallExecuteSequence>
+      <Custom Action="WixCloseApplications" After="InstallInitialize" />
+      <Custom Action="UninstallEXE" After="WixCloseApplications">NSIS_UNINSTALLER</Custom>
+      <Custom Action="SetCleanupCmd" After="UninstallEXE">1</Custom>
+      <Custom Action="CleanupFolder" After="SetCleanupCmd">1</Custom>
+      <Custom Action="InstallEXE" After="InstallFiles">1</Custom>
+      <Custom Action="LaunchApp" After="InstallFinalize">NOT REMOVE AND (UILevel &lt; 5)</Custom>
+    </InstallExecuteSequence>
+
+    <Feature Id="Main" Level="1">
+      <ComponentGroupRef Id="Root" />
+    </Feature>
+  </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFiles64Folder">
+        <Directory Id="INSTALLFOLDER" Name="$(var.AppName)" />
+      </Directory>
+    </Directory>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="Root" Directory="INSTALLFOLDER">
+      <Component Id="Reg" Guid="D2E23D7C-DD5F-402A-A728-9278E81F53C2" Win64="yes">
+        <RegistryKey Root="HKCU" Key="Software\$(var.AppName)">
+          <RegistryValue Name="installed" Type="integer" Value="1" KeyPath="yes" />
+        </RegistryKey>
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>
