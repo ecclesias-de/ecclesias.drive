@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+  <Product Id="*"
+    Name="ecclesiasdrive"
+    Language="1033"
+    Version="$(var.ProductVersion)"
+    Manufacturer="Metaways Infosystems GmbH"
+    UpgradeCode="2CE4E68B-9128-4ACE-9905-3481B51A9C97">
+
+    <Package InstallerVersion="300" Compressed="yes"
+             InstallScope="perMachine"
+             Platform="x64" />
+
+    <MajorUpgrade
+      DowngradeErrorMessage="A newer version of ecclesiasdrive is already installed." />
+
+    <WixVariable Id="WixUIBannerBmp" Value="$(var.BannerBmp)" />
+    <WixVariable Id="WixUIDialogBmp" Value="$(var.DialogBmp)" />
+
+    <!-- Finish page checkbox -->
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT"
+              Value="Launch ecclesiasdrive after setup" />
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1" />
+
+    <!-- Launch app from known NSIS install path -->
+    <CustomAction Id="LaunchApp"
+                  ExeCommand='"[ProgramFiles64Folder]ecclesiasdrive\bin\ecclesiasdrive.exe"'
+                  Execute="immediate"
+                  Impersonate="yes"
+                  Return="asyncNoWait"
+                  Directory="TARGETDIR" />
+
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+    <UIRef Id="WixUI_InstallDir" />
+
+    <UI>
+      <Publish Dialog="ExitDialog"
+               Control="Finish"
+               Event="DoAction"
+               Value="LaunchApp"
+               Order="1">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 AND NOT Installed</Publish>
+
+      <Publish Dialog="WelcomeDlg"
+               Control="Next"
+               Event="NewDialog"
+               Value="InstallDirDlg"
+               Order="2">1</Publish>
+    </UI>
+
+    <Binary Id="SetupExe" SourceFile="$(var.SourceExe)" />
+
+    <CustomAction Id="InstallEXE"
+                  BinaryKey="SetupExe"
+                  ExeCommand="/S"
+                  Execute="deferred"
+                  Impersonate="no"
+                  Return="check" />
+
+    <InstallExecuteSequence>
+      <Custom Action="InstallEXE" After="InstallFiles">NOT Installed</Custom>
+    </InstallExecuteSequence>
+
+    <Feature Id="Main" Level="1">
+      <ComponentGroupRef Id="Dummy" />
+    </Feature>
+  </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFiles64Folder">
+        <Directory Id="INSTALLFOLDER" Name="ecclesiasdrive" />
+      </Directory>
+    </Directory>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="Dummy" Directory="INSTALLFOLDER">
+      <Component Id="Reg"
+                 Guid="D2E23D7C-DD5F-402A-A728-9278E81F53C2"
+                 Win64="yes">
+        <RegistryKey Root="HKCU"
+                     Key="Software\ecclesiasdrive">
+          <RegistryValue Name="installed"
+                         Type="integer"
+                         Value="1"
+                         KeyPath="yes" />
+        </RegistryKey>
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+
+</Wix>

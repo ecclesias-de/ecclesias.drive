@@ -5,8 +5,6 @@ on:
   push:
     branches: [ "6" ]
     tags: [ "*" ]
-  schedule:
-    - cron: "0 0 * * *"
 
 env:
   NPM_GHERLINT: "@gherlint/gherlint@1.1.0"
