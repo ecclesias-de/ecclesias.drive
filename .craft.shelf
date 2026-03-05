@@ -1,6 +1,6 @@
 [General]
 version = 2
-blueprintrepositories = https://invent.kde.org/packaging/craft-blueprints-kde.git|master|;https://github.com/owncloud/craft-blueprints-owncloud.git|master|
+blueprintrepositories = https://invent.kde.org/packaging/craft-blueprints-kde.git|master|;https://github.com/ecclesias-de/craft-blueprints-ecclesiasdrive.git|6.0.3-ecclesiasdrive|;https://github.com/owncloud/craft-blueprints-owncloud.git|master|
 
 [core/cacert]
 version = 2025-09-09
@@ -8,6 +8,10 @@ version = 2025-09-09
 [craft/craft-blueprints-kde]
 version = master
 revision = 945d9fa
+
+[craft/craft-blueprints-ecclesiasdrive]
+version = 6.0.3-ecclesiasdrive
+revision = 378bccfecba5c445650a54db235422fbf8556a70
 
 [craft/craft-blueprints-owncloud]
 version = master
@@ -172,10 +176,6 @@ version = 1.3.2
 
 [libs/zlib]
 version = 1.3.1
-
-[owncloud/libcrashreporter-qt]
-version = master
-revision = 96da290
 
 [qt-libs/qtkeychain]
 version = 0.15.0
