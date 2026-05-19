@@ -8,6 +8,10 @@
         <string>English</string>
         <key>CFBundleExecutable</key>
         <string>${APPLICATION_EXECUTABLE}</string>
+        <key>CFBundleDisplayName</key>
+        <string>${APPLICATION_EXECUTABLE}</string>
+        <key>CFBundleName</key>
+        <string>${APPLICATION_EXECUTABLE}</string>
         <key>CFBundleIconFile</key>
         <string>${MACOSX_BUNDLE_ICON_FILE}</string>
         <key>CFBundleIdentifier</key>

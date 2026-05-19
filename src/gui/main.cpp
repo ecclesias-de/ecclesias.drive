@@ -52,6 +52,124 @@ using namespace std::chrono_literals;
 
 using namespace OCC;
 
+#include <QDir>
+#include <QFileInfo>
+#include <QSettings>
+#include "theme.h"
+
+#ifdef Q_OS_MAC
+#include <Security/Security.h>
+#include <CoreFoundation/CoreFoundation.h>
+
+static void migrateLegacySettingsIfNeeded()
+{
+    const QString targetCfgPath = QDir::homePath()
+        + QStringLiteral("/Library/Preferences/Ecclesias Drive/ecclesiasdrive.cfg");
+
+    QSettings newSettings(targetCfgPath, QSettings::IniFormat);
+    qInfo() << "[Migration] Target config path:" << newSettings.fileName();
+
+    // FIX: skip entire migration block if already completed
+    if (newSettings.value(QStringLiteral("LegacyMigrated"), false).toBool()) {
+        qInfo() << "[Migration] Already migrated, skipping.";
+        return;
+    }
+
+    const QString oldCfgPath = QDir::homePath()
+        + QStringLiteral("/Library/Preferences/Ecclesias Drive/ecclesiasdrive.cfg");
+
+    qInfo() << "[Migration] Searching for legacy config:" << oldCfgPath;
+
+    QFileInfo fi(oldCfgPath);
+    if (!fi.exists() || !fi.isReadable()) {
+        qInfo() << "[Migration] No legacy config found, skipping.";
+        return;
+    }
+
+    qInfo() << "[Migration] Legacy config found, size:" << fi.size() << "bytes.";
+
+    QSettings oldSettings(oldCfgPath, QSettings::IniFormat);
+    const QStringList allLegacyKeys = oldSettings.allKeys();
+
+    if (allLegacyKeys.isEmpty()) {
+        qWarning() << "[Migration] Legacy config parsing returned zero absolute keys.";
+        return;
+    }
+
+    qInfo() << "[Migration] Total keys discovered for processing:" << allLegacyKeys.size();
+
+    for (const QString &absoluteKey : allLegacyKeys) {
+        newSettings.setValue(absoluteKey, oldSettings.value(absoluteKey));
+    }
+
+    newSettings.sync();
+    qInfo() << "[Migration] Complete. Verified keys written:" << newSettings.allKeys().size();
+
+    OCC::Utility::setLaunchOnStartup(
+        QStringLiteral("ecclesiasdrive"),   // old app name (what was registered)
+        QStringLiteral("ecclesiasdrive"),   // old GUI name
+        false                            // false = remove
+    );
+
+    newSettings.setValue(QStringLiteral("LegacyMigrated"), true);
+    newSettings.sync();
+}
+
+static void handleApplicationFolderRenameIfNeeded()
+{
+    // 1. Get the absolute path to the currently running executable binary
+    // Example: /Applications/ecclesiasdrive.app/Contents/MacOS/ecclesiasdrive
+    QString binaryPath = QCoreApplication::applicationFilePath();
+
+    // Move up 3 directory layers to get the physical path of the outer .app container folder
+    QDir appDir(binaryPath);
+    appDir.cdUp(); // Into Contents/MacOS
+    appDir.cdUp(); // Into Contents
+    appDir.cdUp(); // Into the parent folder (e.g., /Applications)
+
+    QString currentAppBundlePath = appDir.absolutePath();
+    QFileInfo bundleInfo(currentAppBundlePath);
+
+    // Define your exact expected target directory folder name
+    QString targetAppBundlePath = bundleInfo.absolutePath() + QStringLiteral("/ecclesiasdrive.app");
+
+    // 2. Evaluate if we are running under the old legacy folder container name
+    if (bundleInfo.fileName() == QStringLiteral("ecclesiasdrive.app"))
+    {
+        qInfo() << "[Branding Fix] Legacy folder container detected running at:" << currentAppBundlePath;
+
+        // Double check to ensure we do not collide with an existing deployment folder
+        if (!QDir(targetAppBundlePath).exists()) {
+            qInfo() << "[Branding Fix] Renaming bundle folder to:" << targetAppBundlePath;
+
+            QDir parentDir(bundleInfo.absolutePath());
+            bool success = parentDir.rename(bundleInfo.fileName(), QStringLiteral("ecclesiasdrive.app"));
+
+            if (success) {
+                qInfo() << "[Branding Fix] Rename operation successful. Flushing macOS LaunchServices caches.";
+
+                // 3. Clear system caches asynchronously so Finder registers the change immediately
+                QStringList lsregisterArgs;
+                lsregisterArgs << QStringLiteral("-kill") << QStringLiteral("-r")
+                               << QStringLiteral("-domain") << QStringLiteral("user")
+                               << QStringLiteral("-domain") << QStringLiteral("local");
+
+                QProcess::startDetached(QStringLiteral("/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister"), lsregisterArgs);
+
+                // Trigger Finder window layout update loop
+                QStringList killallArgs;
+                killallArgs << QStringLiteral("Finder");
+                QProcess::startDetached(QStringLiteral("killall"), killallArgs);
+
+                qInfo() << "[Branding Fix] Complete. Next application reload will cycle using perfect name layouts.";
+            } else {
+                qWarning() << "[Branding Fix] Failed to rename application wrapper folder. Permission restriction or locked file handles.";
+            }
+        }
+    }
+}
+#endif
+
 Q_LOGGING_CATEGORY(lcMain, "gui.main", QtInfoMsg)
 
 namespace {
@@ -420,6 +538,11 @@ int main(int argc, char **argv)
         app.setWindowIcon(Theme::instance()->applicationIcon());
         app.setApplicationVersion(Theme::instance()->versionSwitchOutput());
 
+#ifdef Q_OS_MAC
+        // Execute the path adjustments before the core window frames anchor file mapping
+        handleApplicationFolderRenameIfNeeded();
+#endif
+
 #ifdef Q_OS_LINUX
         // HACK:
         // With X11 arg0.name is used to map WM_CLASS to the desktop file.
@@ -458,6 +581,10 @@ int main(int argc, char **argv)
 
             return 0;
         }
+
+#ifdef Q_OS_MAC
+        migrateLegacySettingsIfNeeded();  // ← before restore()
+#endif
 
         // Check if the user upgraded or downgraded. We do this as early as possible, to detect
         // a possible downgrade.

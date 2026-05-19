@@ -24,7 +24,7 @@ jobs:
             include:
             - name: windows-cl-x86_64
               target: windows-cl-msvc2022-x86_64
-              os: windows-latest
+              os: windows-2022  # <-- CHANGE THIS FROM windows-latest to fix ci error
               container:
               useSonarCloud:
             # TODO: align the target with the name
@@ -179,11 +179,12 @@ jobs:
         $msiOut  = "D:\${{ env.APP_NAME }}-${{ env.APP_VERSION }}.msi"
         $bannerBmp = "${env:GITHUB_WORKSPACE}/src/resources/theme/universal/banner.bmp"
         $dialogBmp = "${env:GITHUB_WORKSPACE}/src/resources/theme/universal/dialog.bmp"
+        $vbscript = "${env:GITHUB_WORKSPACE}/.github/workflows/CleanOldApp.vbs"
         
         Write-Host "msiOut:  $msiOut"
         Write-Host "exePath: $exePath"
         
-        candle.exe "-dWixUIRMOption=UseRM" "-dProductName=${{ env.APP_NAME }}" "-dProductVersion=${{ env.APP_VERSION }}" "-dSourceExe=$($exePath.FullName)" "-dBannerBmp=$bannerBmp" "-dDialogBmp=$dialogBmp" -arch x64 -ext WixUIExtension -ext WixUtilExtension -o $wixObj $wxsFile
+        candle.exe "-dWixUIRMOption=UseRM" "-dProductName=${{ env.APP_NAME }}" "-dProductVersion=${{ env.APP_VERSION }}" "-dSourceExe=$($exePath.FullName)" "-dVbScript=$vbscript" "-dBannerBmp=$bannerBmp" "-dDialogBmp=$dialogBmp" -arch x64 -ext WixUIExtension -ext WixUtilExtension -o $wixObj $wxsFile
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
         light.exe -ext WixUIExtension -ext WixUtilExtension -o $msiOut $wixObj
