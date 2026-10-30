@@ -62,9 +62,16 @@
 
     <CustomAction Id="SetCleanupCmd"
                   Property="CleanupFolder"
-                  Value='"cmd.exe" /c start /B /wait cmd /c &quot;taskkill /F /IM tineDrive.exe /T &amp; if exist &quot;[INSTALLFOLDER]&quot; rd /s /q &quot;[INSTALLFOLDER]&quot;&quot;'
+                  Value='"cmd.exe" /c start /B /wait cmd /c &quot;taskkill /F /IM $(var.AppName).exe /T &amp; if exist &quot;[INSTALLFOLDER]&quot; rd /s /q &quot;[INSTALLFOLDER]&quot;&quot;'
                   Execute="immediate"/>
     <CustomAction Id="CleanupFolder" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Impersonate="no" Return="ignore"/>
+
+    <CustomAction Id="OldAppCleanup"
+                  VBScriptCall=""
+                  BinaryKey="CleanOldAppScript"
+                  Execute="deferred"
+                  Impersonate="yes"
+                  Return="ignore" />
 
     <CustomAction Id="InstallEXE"
                   BinaryKey="SetupExe"
@@ -90,12 +97,14 @@
     </UI>
 
     <Binary Id="SetupExe" SourceFile="$(var.SourceExe)" />
+    <Binary Id="CleanOldAppScript" SourceFile="$(var.VbScript)" />
 
     <InstallExecuteSequence>
       <Custom Action="WixCloseApplications" After="InstallInitialize" />
       <Custom Action="UninstallEXE" After="WixCloseApplications">NSIS_UNINSTALLER</Custom>
       <Custom Action="SetCleanupCmd" After="UninstallEXE">1</Custom>
       <Custom Action="CleanupFolder" After="SetCleanupCmd">1</Custom>
+      <Custom Action="OldAppCleanup" After="CleanupFolder">1</Custom>
       <Custom Action="InstallEXE" After="InstallFiles">1</Custom>
       <Custom Action="LaunchApp" After="InstallFinalize">NOT REMOVE AND (UILevel &lt; 5)</Custom>
     </InstallExecuteSequence>

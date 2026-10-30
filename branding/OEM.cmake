@@ -7,6 +7,10 @@ set( APPLICATION_UPDATE_URL "https://api.tine20.net/driveClientUpdateCheck/" CAC
 set( APPLICATION_ICON_NAME  "ecclesiasdrive" )
 set( APPLICATION_VIRTUALFILE_SUFFIX "ecclesiasdrive" CACHE STRING "Virtual file suffix (not including the .)")
 
+# names used by v2.7.5, only needed for the settings migration
+set( LEGACY_APPLICATION_NAME      "Ecclesias Drive" )
+set( LEGACY_APPLICATION_SHORTNAME "ecclesiasdrive" )
+
 set( LINUX_PACKAGE_SHORTNAME "ecclesiasdrive" )
 
 set( THEME_CLASS            "ownCloudTheme" )

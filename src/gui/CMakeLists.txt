@@ -40,6 +40,7 @@ set(client_SRCS
     folderwatcher.cpp
     generalsettings.cpp
     ignorelisteditor.cpp
+    legacymigration.cpp
     lockwatcher.cpp
     logbrowser.cpp
     networkinformation.cpp
