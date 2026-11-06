@@ -17,6 +17,7 @@
 #include "accountmanager.h"
 #include "common/restartmanager.h"
 #include "gui/application.h"
+#include "gui/legacymigration.h"
 #include "gui/logbrowser.h"
 #include "gui/networkinformation.h"
 #include "libsync/configfile.h"
@@ -458,6 +459,11 @@ int main(int argc, char **argv)
 
             return 0;
         }
+
+        // Migrate the legacy (v2.7.5) settings. This must run before checkClientVersion()
+        // (the copied legacy "clientVersion" key would overwrite the version bump) and before
+        // setupLogging() (the migrated config decides the log setup).
+        runLegacySettingsMigration(options.logDir, options.logFile);
 
         // Check if the user upgraded or downgraded. We do this as early as possible, to detect
         // a possible downgrade.

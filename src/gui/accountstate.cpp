@@ -117,6 +117,12 @@ AccountState::AccountState(AccountPtr account)
         case NetworkInformation::Reachability::Site:
             [[fallthrough]];
         case NetworkInformation::Reachability::Unknown:
+            _networkOffline = false;
+            // The network is back after an outage: sockets from before are dead.
+            // Only mark it, resetNetworkCachesIfNeeded() decides whether to reset.
+            if (!isConnected() && state() != State::SignedOut) {
+                _networkDirty = true;
+            }
             // the connection might not yet be established
             QTimer::singleShot(0, this, [this] { checkConnectivity(false); });
             break;
@@ -127,6 +133,7 @@ AccountState::AccountState(AccountPtr account)
             }
             [[fallthrough]];
         case NetworkInformation::Reachability::Local:
+            _networkOffline = true; // also reached from Disconnected via the fallthrough
             break;
         }
     });
@@ -267,6 +274,18 @@ void AccountState::setState(State state)
                 _state = Connecting;
             }
         }
+       // Track a working connection that breaks (VPN dropped, network lost).
+        // Once per connected session, so the retry loop doesn't re-arm it.
+        if (_state == Connected) {
+            _wasConnected = true;
+            _networkDirty = false;
+        } else if (_state == SignedOut) {
+            _wasConnected = false;
+        } else if (_wasConnected
+            && (_state == Disconnected || _state == NetworkError || _state == ConfigurationError)) {
+            _wasConnected = false;
+            _networkDirty = true;
+        }
     }
 
     // might not have changed but the underlying _connectionErrors might have
@@ -347,6 +366,8 @@ void AccountState::checkConnectivity(bool blockJobs)
         return;
     }
 
+    // After a lost connection: drop stale sockets (and any validator still running on them)
+    resetNetworkCachesIfNeeded();
 
     if (_connectionValidator && blockJobs && !_queueGuard.queue()->isBlocked()) {
         // abort already running non blocking validator
@@ -645,4 +666,26 @@ bool AccountState::readyForSync() const
     return !_fetchCapabilitiesJob && isConnected();
 }
 
+void AccountState::resetNetworkCachesIfNeeded()
+{
+    if (!_networkDirty || _networkOffline || isConnected()) {
+        return;
+    }
+    if (_lastNetworkReset.isValid() && _lastNetworkReset.elapsed() < 5000) {
+        return;
+    }
+    qCInfo(lcAccountState) << "Resetting network connection cache for" << _account->displayNameWithHost()
+                           << "state:" << _state;
+    if (_connectionValidator) {
+        // it was started on the stale sockets: ignore its late result and start a fresh one
+        _connectionValidator->disconnect(this);
+        _connectionValidator->deleteLater();
+        _connectionValidator.clear();
+    }
+    if (auto am = _account->accessManager()) {
+        am->clearConnectionCache();
+    }
+    _lastNetworkReset.restart();
+    // _networkDirty stays set until setState(Connected) clears it
+}
 } // namespace OCC

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?define AppName = "$(var.ProductName)" ?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension" >
+
+  <Product Id="*"
+    Name="$(var.AppName)"
+    Language="1033"
+    Version="$(var.ProductVersion)"
+    Manufacturer="Metaways Infosystems GmbH"
+    UpgradeCode="$(var.UpgradeCode)">
+
+    <Package InstallerVersion="300" Compressed="yes"
+             InstallScope="perMachine"
+             Platform="x64" />
+
+    <!-- Icon for the MSI entry in Apps & features (taken from the embedded setup exe) -->
+    <Icon Id="AppIcon.exe" SourceFile="$(var.SourceExe)" />
+    <Property Id="ARPPRODUCTICON" Value="AppIcon.exe" />
+
+    <!-- MSI -> newer MSI. The old MSI is removed first (nested, before any of OUR deferred
+         actions run); this package then removes the NSIS app it left behind and reinstalls. -->
+    <MajorUpgrade
+      DowngradeErrorMessage="A newer version of $(var.AppName) is already installed."
+      AllowSameVersionUpgrades="yes"
+      Schedule="afterInstallInitialize" />
+
+    <SetProperty Id="WixShellExecTarget"
+                 Value="[INSTALLFOLDER]bin\$(var.AppName).exe"
+                 After="CostFinalize" />
+
+    <util:CloseApplication Id="CloseApp"
+                           Target="$(var.AppName).exe"
+                           CloseMessage="yes"
+                           Timeout="5"
+                           Property="CLOSEAPP" />
+
+    <WixVariable Id="WixUIBannerBmp" Value="$(var.BannerBmp)" />
+    <WixVariable Id="WixUIDialogBmp" Value="$(var.DialogBmp)" />
+
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch $(var.AppName) after setup" />
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1" />
+
+    <!-- Detect ANY existing NSIS install: the old 2.x/3.x EXE, an NSIS-only 6.x, or the NSIS package
+         laid down by a previous MSI. Win64="no" already means the 32-bit view (WOW6432Node), so the
+         key path must not contain it. Both views are searched. -->
+    <Property Id="NSIS_UNINSTALLER">
+      <RegistrySearch Id="FindNsisUninstaller32" Root="HKLM" Win64="no"
+                      Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\$(var.AppName)"
+                      Name="UninstallString" Type="raw" />
+      <RegistrySearch Id="FindNsisUninstaller64" Root="HKLM" Win64="yes"
+                      Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\$(var.AppName)"
+                      Name="UninstallString" Type="raw" />
+    </Property>
+
+    <CustomAction Id="LaunchApp"
+                  BinaryKey="WixCA"
+                  DllEntry="WixShellExec"
+                  Impersonate="yes" />
+
+    <!-- 1. Make sure the app is not running -->
+    <CustomAction Id="KillApp"
+                  Directory="TARGETDIR"
+                  ExeCommand='taskkill.exe /F /IM $(var.AppName).exe /T'
+                  Execute="deferred" Impersonate="no" Return="ignore" />
+
+    <!-- 2. Run the NSIS uninstaller and WAIT. "_?=" makes it run in place instead of copying itself
+            to %TEMP% and returning immediately (which would race with the new install).
+            Return=ignore: a failed legacy uninstall must not block the install. -->
+    <CustomAction Id="UninstallLegacyNsis"
+                  Directory="TARGETDIR"
+                  ExeCommand='"[INSTALLFOLDER]uninstall.exe" /S _?=[INSTALLFOLDER]'
+                  Execute="deferred" Impersonate="no" Return="ignore" />
+
+    <!-- 3. With _?= the uninstaller leaves itself behind: delete it, then remove the folder if it is
+            empty (non-recursive on purpose, so it can never wipe the wrong directory). -->
+    <CustomAction Id="CleanupLegacyFolder"
+                  Directory="TARGETDIR"
+                  ExeCommand='cmd.exe /c del /f /q "[INSTALLFOLDER]uninstall.exe" &amp; rd "[INSTALLFOLDER]"'
+                  Execute="deferred" Impersonate="no" Return="ignore" />
+
+    <CustomAction Id="InstallEXE"
+                  BinaryKey="SetupExe"
+                  ExeCommand='/S /D=[INSTALLFOLDER]'
+                  Execute="deferred"
+                  Impersonate="no"
+                  Return="check" />
+
+
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+
+    <UI>
+      <UIRef Id="WixUI_InstallDir" />
+      <Publish Dialog="ExitDialog"
+               Control="Finish"
+               Event="DoAction"
+               Value="LaunchApp"
+               Order="1">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1</Publish>
+      <Publish Dialog="WelcomeDlg"
+               Control="Next"
+               Event="NewDialog"
+               Value="InstallDirDlg"
+               Order="2">1</Publish>
+    </UI>
+
+    <Binary Id="SetupExe" SourceFile="$(var.SourceExe)" />
+
+    <InstallExecuteSequence>
+      <Custom Action="WixCloseApplications" After="InstallInitialize" />
+
+      <!-- Remove the existing NSIS app when installing / repairing / upgrading (NOT REMOVE), or on a
+           real MSI removal. During a major upgrade the old MSI's removal skips this
+           (UPGRADINGPRODUCTCODE set); the new package does it. -->
+      <Custom Action="KillApp" After="WixCloseApplications">NSIS_UNINSTALLER AND (NOT REMOVE OR (REMOVE="ALL" AND NOT UPGRADINGPRODUCTCODE))</Custom>
+      <Custom Action="UninstallLegacyNsis" After="KillApp">NSIS_UNINSTALLER AND (NOT REMOVE OR (REMOVE="ALL" AND NOT UPGRADINGPRODUCTCODE))</Custom>
+      <Custom Action="CleanupLegacyFolder" After="UninstallLegacyNsis">NSIS_UNINSTALLER AND (NOT REMOVE OR (REMOVE="ALL" AND NOT UPGRADINGPRODUCTCODE))</Custom>
+      <Custom Action="InstallEXE" After="InstallFiles">NOT REMOVE</Custom>
+      <Custom Action="LaunchApp" After="InstallFinalize">NOT REMOVE AND (UILevel &lt; 5)</Custom>
+    </InstallExecuteSequence>
+
+    <Feature Id="Main" Level="1">
+      <ComponentGroupRef Id="Root" />
+      <ComponentGroupRef Id="NsisEntryHiding" />
+    </Feature>
+  </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFiles64Folder">
+        <Directory Id="INSTALLFOLDER" Name="$(var.AppName)" />
+      </Directory>
+    </Directory>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="Root" Directory="INSTALLFOLDER">
+      <Component Id="Reg" Guid="D2E23D7C-DD5F-402A-A728-9278E81F53C2" Win64="yes">
+        <RegistryKey Root="HKCU" Key="Software\$(var.AppName)">
+          <RegistryValue Name="installed" Type="integer" Value="1" KeyPath="yes" />
+        </RegistryKey>
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+
+  <!-- Hides the NSIS "Apps & features" entry without any script: the MSI itself writes
+       SystemComponent=1 into the NSIS uninstall key (32-bit view, where the NSIS setup registers).
+       Windows Installer writes registry values after InstallFiles, i.e. after InstallEXE has created
+       the key; NSIS never removes this value. The key stays so the MSI can still find the uninstaller. -->
+  <Fragment>
+    <ComponentGroup Id="NsisEntryHiding">
+      <Component Id="NsisEntryHidingReg" Directory="TARGETDIR"
+                 Guid="9F3B7A52-6C1E-4D84-B0A7-5E2C8D91F4A3" Win64="no">
+        <RegistryValue Root="HKLM"
+                       Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\$(var.AppName)"
+                       Name="SystemComponent" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>
