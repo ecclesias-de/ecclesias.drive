@@ -169,6 +169,7 @@ private:
     explicit AccountState(AccountPtr account);
 
     void setState(State state);
+    void resetNetworkCachesIfNeeded();
 
 Q_SIGNALS:
     void stateChanged(State state);
@@ -193,6 +194,10 @@ private:
     bool _waitingForNewCredentials;
     QDateTime _timeOfLastETagCheck;
     QPointer<ConnectionValidator> _connectionValidator;
+    bool _wasConnected = false;      // was Connected since the last error
+    bool _networkDirty = false;      // sockets may be stale; stays set until Connected, reset is throttled to every 5 s
+    bool _networkOffline = false;    // last reachability was Disconnected/Local
+    QElapsedTimer _lastNetworkReset;
     QPointer<UpdateUrlDialog> _updateUrlDialog;
     QPointer<TlsErrorDialog> _tlsDialog;
     bool _supportsSpaces = true;

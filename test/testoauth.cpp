@@ -183,6 +183,11 @@ public:
         QUrl redirectUri(query.queryItemValue(QStringLiteral("redirect_uri")));
         QCOMPARE(redirectUri.host(), localHost);
         redirectUri.setQuery(QStringLiteral("code=%1&state=%2").arg(code, query.queryItemValue(QStringLiteral("state"))));
+        // the app listens on QHostAddress::LocalHost (IPv4 only), so connect there directly
+        // instead of relying on how "localhost" resolves on the runner
+        if (redirectUri.host() == QLatin1String("localhost")) {
+            redirectUri.setHost(QStringLiteral("127.0.0.1"));
+        }
         createBrowserReply(QNetworkRequest(redirectUri));
     }
 
@@ -378,7 +383,7 @@ private Q_SLOTS:
                     };
                     for (const auto &x : payloads) {
                         auto socket = new QTcpSocket(this);
-                        socket->connectToHost(QStringLiteral("localhost"), port);
+                        socket->connectToHost(QStringLiteral("127.0.0.1"), port);
                         QVERIFY(socket->waitForConnected());
                         socket->write(x);
                     }

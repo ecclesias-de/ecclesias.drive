@@ -59,7 +59,7 @@
               <string notr="true"/>
              </property>
              <property name="pixmap">
-              <pixmap>:/client/ownCloud/theme/colored/owncloud-icon.svg</pixmap>
+              <pixmap>:/client/ecclesiasdrive/theme/colored/ecclesiasdrive-icon.svg</pixmap>
              </property>
             </widget>
            </item>
